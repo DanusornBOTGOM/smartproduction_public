@@ -1,0 +1,97 @@
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><%- heading %></h1>
+        <a href="/backend/bar1" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">กลับหน้าหลัก BAR1</a>
+    </div>
+
+
+    <div class="card shadow mb-4"></div>
+        <div class="card-header py-3">
+            <h5 class="m-0 font-weight-bold text-primary">รายงานของเสียประจำสัปดาห์/เดือน</h5>
+        </div>
+            <div class="chart-controls mb-3">
+                <div class="date-inputs">
+                    <div class="input-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="startDate">Start:</label>
+                                <input type="date" id="startDate" class="form-control">
+                                <label class="input-group-text" for="endDate">End:</label>
+                                <input type="date" id="endDate" class="form-control"> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button id="exportExcelNCR" class="btn btn-success">Export Weekly Report NCR to Excel</button>
+                    <button id="generateReportNcr" class="btn btn-primary ml-2">สร้างรายงาน</button>
+                    <button id="saveAllPreventiveCorrectionsNcr" class="btn btn-primary ml-2">บันทึกข้อมูล</button>
+                </div>
+            </div>
+            <table id="reportTableNcr" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>วันที่</th>
+                        <th>เครื่องจักร</th>
+                        <th>ของเสียสะสม(NCR)</th>
+                        <th>ปัญหา</th>
+                        <th>การแก้ไขป้องกัน</th>
+                    </tr>
+                </thead>
+                <tbody> 
+                    
+                </tbody>
+            </table>
+            </div>
+    </div>    
+    
+
+        <!-- Waste Production Chart -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Waste Production Chart</h6>
+            </div>
+            <div class="chart-controls mb-3">
+                <div class="date-inputs">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <!-- <span id="wasteStartDisplay" class="input-group-text">Start:</span> -->
+                            <span class="input-group-text">Start:</span>
+                        </div>
+                        <input id="wasteStart" type="date" class="form-control">
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <!-- <span id="wasteEndDisplay" class="input-group-text">End:</span> -->
+                            <span class="input-group-text">End:</span>
+                        </div>
+                        <input id="wasteEnd" type="date" class="form-control">
+                    </div>
+                <div class="button-group">
+                    <button id="wasteFilterButton" class="btn btn-primary">Filter</button>
+                    <button id="wasteResetButton" class="btn btn-secondary">Reset Date</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="waste-chart-container" style="position: relative; height: 80vh; width: 100%;">
+                    <canvas id="wasteChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+        <script src="vendor/chart.js/Chart.min.js"></script>
+        <script src="js/chart/ng/chart-bar-bar1.js"></script>
+        <!-- <script src="js/table/reportmonth/table-data-Report-allMounth-Cgm.js"></script> -->
+        <!-- <script src="js/report/weekly-report-cgm.js"></script> -->
+        <script src="js/report/ng/weekly-reportNCR-bar1.js"></script>
+
+
+        <script src="js/exceljs.min.js"></script>
+
+
+
+
+

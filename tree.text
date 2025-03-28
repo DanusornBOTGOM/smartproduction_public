@@ -1,0 +1,184 @@
+assets
+ ┣ backend
+ ┃ ┣ css
+ ┃ ┃ ┣ custom.css
+ ┃ ┃ ┣ sb-admin-2.css
+ ┃ ┃ ┗ sb-admin-2.min.css
+ ┃ ┣ img
+ ┃ ┣ js
+ ┃ ┃ ┣ chart
+ ┃ ┃ ┃ ┣ ng
+ ┃ ┃ ┃ ┃ ┗ bar2-NG-chart.js
+ ┃ ┃ ┃ ┣ chart-area-demo.js
+ ┃ ┃ ┃ ┣ chart-bar-annealing.js
+ ┃ ┃ ┃ ┣ chart-bar-bar2.js
+ ┃ ┃ ┃ ┣ chart-bar-cgm.js
+ ┃ ┃ ┃ ┣ chart-bar-drawing.js
+ ┃ ┃ ┃ ┣ chart-bar-plan-actual-Bar2.js
+ ┃ ┃ ┃ ┣ chart-bar-plan-actual-Drawing.js
+ ┃ ┃ ┃ ┣ chart-bar-profile.js
+ ┃ ┃ ┃ ┣ chart-pie-demo.js
+ ┃ ┃ ┃ ┣ chartbartest.js
+ ┃ ┃ ┃ ┣ datatables-demo.js
+ ┃ ┃ ┃ ┗ sdsfd.js
+ ┃ ┃ ┣ report
+ ┃ ┃ ┃ ┣ ng
+ ┃ ┃ ┃ ┃ ┣ ng-report-bar2.js
+ ┃ ┃ ┃ ┃ ┗ ng-report-drawing.js
+ ┃ ┃ ┃ ┣ weekly-report-bar2.js
+ ┃ ┃ ┃ ┣ weekly-report-drawing.js
+ ┃ ┃ ┃ ┗ weekly-report-profile.js
+ ┃ ┃ ┣ table
+ ┃ ┃ ┃ ┣ profile-calculation.js
+ ┃ ┃ ┃ ┣ table-annealing.js
+ ┃ ┃ ┃ ┣ table-Dailyproduction-data-Annealing.js
+ ┃ ┃ ┃ ┣ table-Dailyproduction-data-Bar2.js
+ ┃ ┃ ┃ ┣ table-Dailyproduction-data-Cgm.js
+ ┃ ┃ ┃ ┣ table-Dailyproduction-data-Drawing.js
+ ┃ ┃ ┃ ┣ table-Dailyproduction-data-Profile.js
+ ┃ ┃ ┃ ┣ table-data-Report-allMounth-Bar2.js
+ ┃ ┃ ┃ ┗ table-Drawing-data-allMounth-Drawing.js
+ ┃ ┃ ┣ custom.js
+ ┃ ┃ ┣ data-worker.js
+ ┃ ┃ ┣ exceljs.min.js
+ ┃ ┃ ┣ filterdate-coilnosql.js
+ ┃ ┃ ┣ sb-admin-2.js
+ ┃ ┃ ┣ sb-admin-2.min.js
+ ┃ ┃ ┣ sidebar.js
+ ┃ ┃ ┗ Sarabun-normal.js
+ ┃ ┗ vendor
+ ┃ ┃ ┣ bootstrap
+ ┃ ┃ ┃ ┣ js
+ ┃ ┃ ┃ ┃ ┣ bootstrap.bundle.js
+ ┃ ┃ ┃ ┃ ┣ bootstrap.bundle.js.map
+ ┃ ┃ ┃ ┃ ┣ bootstrap.bundle.min.js
+ ┃ ┃ ┃ ┃ ┣ bootstrap.bundle.min.js.map
+ ┃ ┃ ┃ ┃ ┣ bootstrap.js
+ ┃ ┃ ┃ ┃ ┣ bootstrap.js.map
+ ┃ ┃ ┃ ┃ ┣ bootstrap.min.js
+ ┃ ┃ ┃ ┃ ┗ bootstrap.min.js.map
+ ┃ ┃ ┃ ┗ scss
+ ┃ ┃ ┃ ┃ ┣ mixins
+           .......
+ ┃ ┃ ┃ ┃ ┣ vendor
+ ┃ ┃ ┃ ┃ ┃ ┗ _rfs.scss
+            ............
+ ┃ ┃ ┣ chart.js
+ ┃ ┃ ┃ ┣ Chart.bundle.js
+ ┃ ┃ ┃ ┣ Chart.bundle.min.js
+ ┃ ┃ ┃ ┣ Chart.js
+ ┃ ┃ ┃ ┗ Chart.min.js
+ ┃ ┃ ┣ datatables
+ ┃ ┃ ┃ ┣ dataTables.bootstrap4.css
+ ┃ ┃ ┃ ┣ dataTables.bootstrap4.js
+ ┃ ┃ ┃ ┣ dataTables.bootstrap4.min.css
+ ┃ ┃ ┃ ┣ dataTables.bootstrap4.min.js
+ ┃ ┃ ┃ ┣ jquery.dataTables.js
+ ┃ ┃ ┃ ┗ jquery.dataTables.min.js
+ ┃ ┃ ┣ fontawesome-free
+ ┃ ┃ ┃ ┣ css
+         ...............
+ ┃ ┃ ┃ ┣ js
+ ┃ ┃ ┃ ┃ ┣ all.js
+ ┃ ┃ ┃ ┃ ┣ all.min.js
+ ┃ ┃ ┃ ┃ ┣ brands.js
+ ┃ ┃ ┃ ┃ ┣ brands.min.js
+ ┃ ┃ ┃ ┃ ┣ conflict-detection.js
+ ┃ ┃ ┃ ┃ ┣ conflict-detection.min.js
+ ┃ ┃ ┃ ┃ ┣ fontawesome.js
+ ┃ ┃ ┃ ┃ ┣ fontawesome.min.js
+ ┃ ┃ ┃ ┃ ┣ regular.js
+ ┃ ┃ ┃ ┃ ┣ regular.min.js
+ ┃ ┃ ┃ ┃ ┣ solid.js
+ ┃ ┃ ┃ ┃ ┣ solid.min.js
+ ┃ ┃ ┃ ┃ ┣ v4-shims.js
+ ┃ ┃ ┃ ┃ ┗ v4-shims.min.js
+ ┃ ┃ ┃ ┣ less
+          ...............
+ ┃ ┃ ┃ ┣ metadata
+ ┃ ┃ ┃ ┃ ┣ categories.yml
+ ┃ ┃ ┃ ┃ ┣ icons.yml
+ ┃ ┃ ┃ ┃ ┣ shims.yml
+ ┃ ┃ ┃ ┃ ┗ sponsors.yml
+ ┃ ┃ ┃ ┣ scss
+            ..............
+ ┃ ┃ ┃ ┣ sprites
+ ┃ ┃ ┃ ┃ ┣ brands.svg
+ ┃ ┃ ┃ ┃ ┣ regular.svg
+ ┃ ┃ ┃ ┃ ┗ solid.svg
+ ┃ ┃ ┃ ┣ svgs
+ ┃ ┃ ┃ ┃ ┣ brands
+         ...............
+ ┃ ┃ ┃ ┣ webfonts
+ ┃ ┃ ┃ ┃ ┣ fa-brands-400.eot
+ ┃ ┃ ┃ ┃ ┣ fa-brands-400.svg
+ ┃ ┃ ┃ ┃ ┣ fa-brands-400.ttf
+ ┃ ┃ ┃ ┃ ┣ fa-brands-400.woff
+ ┃ ┃ ┃ ┃ ┣ fa-brands-400.woff2
+ ┃ ┃ ┃ ┃ ┣ fa-regular-400.eot
+ ┃ ┃ ┃ ┃ ┣ fa-regular-400.svg
+ ┃ ┃ ┃ ┃ ┣ fa-regular-400.ttf
+ ┃ ┃ ┃ ┃ ┣ fa-regular-400.woff
+ ┃ ┃ ┃ ┃ ┣ fa-regular-400.woff2
+ ┃ ┃ ┃ ┃ ┣ fa-solid-900.eot
+ ┃ ┃ ┃ ┃ ┣ fa-solid-900.svg
+ ┃ ┃ ┃ ┃ ┣ fa-solid-900.ttf
+ ┃ ┃ ┃ ┃ ┣ fa-solid-900.woff
+ ┃ ┃ ┃ ┃ ┗ fa-solid-900.woff2
+ ┃ ┃ ┃ ┣ attribution.js
+ ┃ ┃ ┃ ┣ LICENSE.txt
+ ┃ ┃ ┃ ┗ package.json
+ ┃ ┃ ┣ jquery
+ ┃ ┃ ┃ ┣ jquery.js
+ ┃ ┃ ┃ ┣ jquery.min.js
+ ┃ ┃ ┃ ┣ jquery.min.map
+ ┃ ┃ ┃ ┣ jquery.slim.js
+ ┃ ┃ ┃ ┣ jquery.slim.min.js
+ ┃ ┃ ┃ ┗ jquery.slim.min.map
+ ┃ ┃ ┗ jquery-easing
+ ┃ ┃ ┃ ┣ jquery.easing.compatibility.js
+ ┃ ┃ ┃ ┣ jquery.easing.js
+ ┃ ┃ ┃ ┗ jquery.easing.min.js
+ ┗ frontend
+ ┃ ┣ css
+ ┃ ┃ ┗ style.css
+ ┃ ┗ images
+ ┃ ┃ ┗ slide
+config
+ ┗ sqldb_dbconfig.js
+ routes
+ ┣ api.js
+ ┗ backend.js
+ views
+ ┣ layouts
+ ┃ ┗ backend.ejs
+ ┣ pages
+ ┃ ┣ backend
+ ┃ ┃ ┣ annealing.ejs
+ ┃ ┃ ┣ bar2-Ncr.ejs
+ ┃ ┃ ┣ bar2.ejs
+ ┃ ┃ ┣ category.ejs
+ ┃ ┃ ┣ cgm.ejs
+ ┃ ┃ ┣ coilnosql.ejs
+ ┃ ┃ ┣ create_category.ejs
+ ┃ ┃ ┣ create_product.ejs
+ ┃ ┃ ┣ dashboard.ejs
+ ┃ ┃ ┣ demopdf.ejs
+ ┃ ┃ ┣ drawing-plan-actual.ejs
+ ┃ ┃ ┣ drawing.ejs
+ ┃ ┃ ┣ edit_category.ejs
+ ┃ ┃ ┣ edit_coilnosql.ejs
+ ┃ ┃ ┣ edit_product.ejs
+ ┃ ┃ ┣ products.ejs
+ ┃ ┃ ┣ profile-cal.ejs
+ ┃ ┃ ┗ profile.ejs
+ ┃ ┗ frontend
+ ┗ partials
+ ┃ ┣ backend
+ ┃ ┃ ┣ footer.ejs
+ ┃ ┃ ┣ navbar.ejs
+ ┃ ┃ ┣ navbar2.ejs
+ ┃ ┃ ┗ sidebar.ejs
+ ┃ ┗ frontend
+ ┃ ┃ ┗ footer.ejs
+ app.js

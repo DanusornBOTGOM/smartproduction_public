@@ -1,0 +1,164 @@
+<ul class="navbar-nav sidebar sidebar-dark accordion hidden-sidebar" id="accordionSidebar">
+
+<!-- Sidebar - Brand -->
+<a class="sidebar-brand d-flex align-items-center justify-content-center flex-column" href="/backend">
+    <div class="sidebar-brand-text">SmartProduction</div>
+    <% if (locals.session?.user) { %>
+        <div class="text-light small" style="margin-top: -5px;">
+            <i class="fas fa-user fa-sm fa-fw"></i>
+            <%= locals.session.user.username %>
+        </div>
+        <a href="/auth/logout" class="btn btn-sm btn-danger" style="margin-top: -2px; padding: 2px 8px;">
+            <i class="fas fa-sign-out-alt fa-sm fa-fw"></i> Logout
+        </a>
+    <% } else { %>
+        <a href="/auth/login" class="btn btn-sm btn-primary" style="margin-top: -2px; padding: 2px 8px;">
+            <i class="fas fa-sign-in-alt fa-sm fa-fw"></i> Login
+        </a>
+    <% } %>
+</a>
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <!-- <li class="nav-item">
+        <a href="/production/annealing/form" class="nav-link">
+            <i class="fas fa-list"></i>
+            <span>รายการ Annealing</span>
+        </a>
+    </li> -->
+
+    <!-- Nav Item - OEE Collapse Menu -->
+    <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReport" aria-expanded="false" aria-controls="collapseReport">
+            <!-- <i class="fas fa-fw fa-tachometer-alt"></i> -->
+            <span>บันทึกรายงานการผลิต</span>
+        </a>
+        <div id="collapseReport" class="collapse" aria-labelledby="collapseReport" data-parent="#accordionSidebar">
+            <div class="py-2 collapse-inner rounded">
+                <a class="collapse-item" href="/production/annealing/form">รายการ Annealing</a>
+                <a class="collapse-item" href="/api/production/reports/daily">รายการ บ่อต้ม</a>
+            </div>
+        </div>
+    </li> 
+
+
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- <div class="sidebar-heading">
+        OEE Dashboard
+    </div> -->
+
+    <!-- Nav Item - OEE Collapse Menu -->
+    <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOEE" aria-expanded="false" aria-controls="collapseOEE">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>OEE</span>
+        </a>
+        <div id="collapseOEE" class="collapse" aria-labelledby="headingOEE" data-parent="#accordionSidebar">
+            <div class="py-2 collapse-inner rounded">
+                <a class="collapse-item" href="/backend/oee-dashboard">OEE รายเครื่องจักร</a>
+                <a class="collapse-item" href="/api/production/oee/dashboard#">OEE แสดงผลรวมแผนก</a>
+                <a class="collapse-item" href="/api/production/working-hour">ชั่วโมงการทำงาน</a>
+            </div>
+        </div>
+    </li> 
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Factory Performance
+    </div>
+
+        <!-- Nav Item - Pages Collapse Menu1 -->
+        <li class="nav-item active">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Factory: 1</span>
+            </a>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="/backend/bar1">BAR 1</a>
+                    <a class="collapse-item" href="/backend/drawing">DRAWING</a>
+                    <a class="collapse-item" href="/backend/annealing">Annealing</a>
+
+                    <!-- <a class="collapse-item" href="/backend/category">Category</a>
+                    <a class="collapse-item" href="/backend/products">Products</a>
+                    <a class="collapse-item" href="/backend/category">Category</a>
+                    <a class="collapse-item" href="/backend/products">Products</a> -->
+                </div>
+            </div>
+        </li>
+
+    <!-- Nav Item - Pages Collapse Menu 2-->
+    <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Factory: 2</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="py-2 collapse-inner rounded">
+                <a class="collapse-item" href="/backend/bar2">BAR 2</a>
+                <a class="collapse-item" href="/backend/profile">Profile</a>
+                <a class="collapse-item" href="/backend/cgm">CGM</a>
+                <!-- <a class="collapse-item" href="/backend/category">Category</a>
+                <a class="collapse-item" href="/backend/products">Products</a> -->
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu 3-->
+    <!-- <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTree">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Test</span>
+        </a>
+        <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="py-2 collapse-inner rounded">
+                <a class="collapse-item" href="/backend/profile-cal">ทดสอบลงข้อมูล</a>
+                <a class="collapse-item" href="/backend/quotation-history">ประวัติการเสนอราคา</a>
+            </div>
+        </div>
+    </li> -->
+    
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+            <a href="/api/production/rework/form-record" class="nav-link">
+                <span>บันทึกงาน Rework</span>
+            </a>
+        </li>
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+            <a class="nav-link" href="/backend/quotation-history">
+                <span>ประวัติการเสนอราคา(Test)</span>
+            </a>
+            <a class="nav-link" href="/backend/profile-cal">
+                <span>คำนวณราคา New Model: Profile(Test)</span>
+            </a>
+            <a class="nav-link" href="/backend/sales/sale_new_customers">
+                <span>SpecialCustomers</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="/backend/sales/admin_settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+
+
+    <div class="sidebar-heading">
+        Phase 2 (ตัวนับเวลาที่เครื่องเดินจบกี่โมง)
+    </div>
+
+</ul>

@@ -1,0 +1,135 @@
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><%- heading %></h1>
+        <a href="/production/annealing/form" class="btn btn-sm btn-primary">
+            <i class="fas fa-plus fa-sm text-white-150"></i> เพิ่มข้อมูลใหม่
+        </a>
+    </div>
+    <!-- <button id="exportPDF" class="btn btn-danger btn-sm">
+        <i class="fas fa-file-pdf"></i> Export PDF
+    </button>
+    <button id="exportExcel" class="btn btn-success btn-sm">
+        <i class="fas fa-file"></i> Export Excel
+    </button> -->
+
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="m-0 font-weight-bold text-primary">PRODUCTION REPORT (CLEANING)</h5>
+                <h6 class="m-0 font-weight-bold text-primary">รายงานการล้างลวดประจำวันและการตรวจสอบคุณภาพ</h6>
+            </div>
+            <div class="d-flex align-items-center">
+                <!-- เพิ่มส่วนแสดงผลรวมแต่ละกะ -->
+                <div class="mr-4">
+                    <div class="text-primary font-weight-bold" id="morningShiftSummary">
+
+                    </div>
+                    <div class="text-info font-weight-bold" id="nightShiftSummary">
+
+                    </div>
+                </div>
+        
+                <!-- ปุ่ม Export เดิม -->
+                <!-- <button id="exportPDF" class="btn btn-danger btn-sm mr-2">
+                    <i class="fas fa-file-pdf"></i> Export PDF
+                </button> -->
+                <button id="exportExcel" class="btn btn-success btn-sm mr-2">
+                    <i class="fas fa-file"></i> Export Excel
+                </button>
+                <label class="mr-2 mb-0">เลือกวันที่: </label>
+                <input type="date" id="startDate" class="form-control-sm mr-2">
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="annealingTable">
+                    <thead>
+                        <tr>
+                            <th>MFG No.</th>
+                            <th>Grade</th>
+                            <th>Size</th>
+
+                            <th>CoilNo</th>
+                            <th>Step</th>
+                            <th>หมายเลขป้ายแทน</th>
+                            <th>หมายเลขรีล</th>
+                            <th>บ่อที่</th>
+                            <th>เริ่มล้าง</th>
+                            <th>ล้างจบ</th>
+                            <th>สะอาด</th>
+                            <th>รอย</th>
+                            <th>สนิม</th>
+                            <th>ไม่คดงอ</th>
+                            <th>WeightOut</th>
+                            <th>วันที่บันทึก</th>
+                            <th>สถานะ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% records.forEach(record => { %>
+                            <tr>
+                                <td><%= record.DocNo %></td>
+                                <td><%= record.Grade %></td>
+                                <td><%= record.Size %></td>
+                                <td><%= record.CoilNo %></td>
+                                <td><%= record.CurrentStep %></td>
+                                <td><%= record.LabelNumber %></td>  
+                                <td><%= record.PlateNo %></td>  
+                                <td><%= record.WashingPound %></td>       
+                                <td><%= formatDateThai(record.TimeIn) %></td>                    
+                                <td><%= formatDateThai(record.PrintTime) %></td>
+                                <td>
+                                    <%= record.CleanLiness === 0 ? 'ผ่าน' : 'ไม่ผ่าน' %>
+                                </td>
+                                <td>
+                                    <%= record.WireWound === 0 ? 'ผ่าน' : 'ไม่ผ่าน' %>
+                                </td>
+                                <td>
+                                    <%= record.Rust === 0 ? 'ผ่าน' : 'ไม่ผ่าน' %>
+                                </td>
+                                <td>
+                                    <%= record.Bend === 0 ? 'ผ่าน' : record.Bend === null ? '-' : 'ไม่ผ่าน' %>
+                                </td>      
+                                <td><%= record.PrintWeight %></td>                                                                                        
+                                <td><%= formatDateThai(record.CreateDate) %></td>
+                                <td>
+                                    <span class="badge badge-<%= 
+                                    record.EntryStatus === 'annealing' ? 'primary' : 
+                                    record.EntryStatus === 'pack' ? 'success' : 
+                                    record.EntryStatus === 'profile' ? 'warning' : 
+                                    record.EntryStatus === 'coating' ? 'warning' : 'secondary' 
+                                %>">
+                                    <%= 
+                                        record.EntryStatus === 'annealing' ? 'เข้าอันนีล' : 
+                                        record.EntryStatus === 'pack' ? 'เข้าแพ็ค' : 
+                                        record.EntryStatus === 'profile' ? 'รีดเหลี่ยม' :  
+                                        record.EntryStatus === 'coating' ? 'เข้าบ่อต้ม' : 'ไม่ระบุ'
+                                    %>
+                                </span>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        
+        
+    </div>
+</div>
+
+
+<!-- <script src="/backend/js/table/annealing-records.js"></script> -->
+<!-- <script src="/backend/vendor/jquery/jquery.min.js"></script> -->
+<!-- <script src="/backend/vendor/datatables/jquery.dataTables.min.js"></script> -->
+<!-- <script src="/backend/vendor/datatables/dataTables.bootstrap4.min.js"></script> -->
+
+<script src="/backend/js/exceljs.min.js"></script>
+<!-- <script src="/backend/js/jspdf.umd.min.js"></script>
+<script src="/backend/js/jspdf.plugin.autotable.min.js"></script> -->
+
+<!-- <script src="/backend/js/utils/dateUtils.js"></script> -->
+<script src="/backend/js/table/production/annealing-records.js"></script>
+

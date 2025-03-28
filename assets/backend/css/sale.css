@@ -1,0 +1,86 @@
+.table-responsive {
+    max-height: 10000px; /* หรือค่าที่สูงมากๆ */
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+#saleNewCustomersTable {
+    width: 100%;
+    border-collapse: collapse;
+    color: #000000;
+}
+
+#saleNewCustomersTable thead {
+    position: sticky;
+    top: 0;
+    background-color: #2596be;
+    z-index: 1;
+}
+
+#saleNewCustomersTable th {
+    background-color: #2596be;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#saleNewCustomersTable td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+
+#saleNewCustomersTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#saleNewCustomersTable tr:hover {
+    background-color: #e6e6e6;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+    #saleNewCustomersTable {
+        font-size: 0.9rem;
+    }
+    /* เพิ่มส่วนนี้เพื่อให้ตารางสามารถเลื่อนได้บนมือถือ */
+    .table-responsive {
+        overflow-x: scroll;
+    }
+}
+
+
+.view-customer-form .form-group {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e3e6f0;
+    padding-bottom: 1rem;
+}
+.view-customer-form .form-control-static {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+.view-customer-form label {
+    font-weight: bold;
+}
+.edit-buttons {
+    margin-bottom: 1rem;
+}
+.readonly-view {
+    background-color: #f8f9fc;
+    padding: 0.5rem;
+    border-radius: 0.35rem;
+}
+
+.form-control-plaintext {
+    color: #000000 !important;
+}
+
+.nowrap-cell {
+    white-space: nowrap;
+}
+

@@ -1,0 +1,112 @@
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="startDate">Start Date</label>
+                                <input type="date" class="form-control" id="startDate">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="endDate">End Date</label>
+                                <input type="date" class="form-control" id="endDate">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="machineCode">Machine</label>
+                                <select class="form-control" id="machineCode">
+                                    <option value="">Select Machine</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button id="searchBtn" class="btn btn-primary btn-block">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OEE Metrics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">OEE</h5>
+                    <h2 id="oeeValue">0%</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Availability</h5>
+                    <h2 id="availabilityValue">0%</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Performance</h5>
+                    <h2 id="performanceValue">0%</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Quality</h5>
+                    <h2 id="qualityValue">0%</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="oeeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <button id="exportButton" class="btn btn-primary">Export to Excel</button>
+                        <table id="oeeTable" class="table table-bordered oee-table">
+                            <thead>
+                                
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/utils/dateUtils.js"></script>
+<script src="vendor/chart.js/Chart.min.js"></script>
+<script src="js/chart/chart-bar-profile.js"></script>
+<script src="js/oee-dashboard.js"></script>
+<script src="js/exceljs.min.js"></script>

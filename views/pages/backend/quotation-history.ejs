@@ -1,0 +1,109 @@
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">ประวัติการเสนอราคา</h1>
+    
+    <!-- ส่วนค้นหา -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h6 class="m-0 font-weight-bold text-primary">ค้นหา</h6>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>วันที่เริ่มต้น</label>
+                        <input type="date" id="startDate" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>วันที่สิ้นสุด</label>
+                        <input type="date" id="endDate" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>ชื่อลูกค้า</label>
+                        <input type="text" id="customerSearch" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>สถานะ</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">ทั้งหมด</option>
+                            <option value="Draft">Draft</option>
+                            <option value="Pending">รออนุมัติ</option>
+                            <option value="Approved">อนุมัติแล้ว</option>
+                            <option value="Rejected">ไม่อนุมัติ</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button id="searchBtn" class="btn btn-primary">ค้นหา</button>
+        </div>
+    </div>
+
+    <!-- ตารางแสดงผล -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="quotationTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>เลขที่</th>
+                            <th>วันที่</th>
+                            <th>ลูกค้า</th>
+                            <th>รายละเอียด</th>
+                            <th>ราคารวม</th>
+                            <th>สถานะ</th>
+                            <th>การจัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal แสดงรายละเอียด -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">รายละเอียดใบเสนอราคา</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalContent">
+                <!-- รายละเอียดจะถูกเพิ่มด้วย JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                <button type="button" class="btn btn-primary" id="exportPdfBtn">Export PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="js/jspdf.umd.min.js"></script>
+<script src="js/jspdf.plugin.autotable.min.js"></script>
+
+<!-- <script src="js/jspdf.customfonts.debug.js"></script>
+<script src="js/jspdf.customfonts.min.js"></script> -->
+
+<script>
+    window.jsPDF = window.jspdf.jsPDF;
+</script>
+
+<script src="js/fonts/defaultVFS.js"></script>
+<script src="js/quotation-history.js"></script>
+
+

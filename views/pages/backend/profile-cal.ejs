@@ -1,0 +1,785 @@
+<div class="container mt-5">
+    <h1>คำนวณราคา New Model: Profile</h1>
+    <form id="profileForm">
+        <!-- ส่วนข้อมูลทั่วไป -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="customerName">ชื่อลูกค้า:</label>
+                    <input type="text" class="form-control" id="customerName" name="customerName">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="size">ขนาดลวดกลม (mm):</label>
+                    <input type="number" class="form-control" id="size" name="size" step="0.01">
+                    <small id="sizeHelp" class="form-text text-muted">กรุณาใส่ค่าระหว่าง 0 ถึง 1000 มิลลิเมตร</small>
+                    <div id="toolingInfo"></div>  <!-- เพิ่มบรรทัดนี้ -->
+                </div>
+            </div>
+        </div>
+
+        <!-- เพิ่ม loading indicator -->
+        <div id="loadingIndicator" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">กำลังคำนวณ...</span>
+            </div>
+        </div>
+
+        <!-- ส่วนเลือกเกรดและรูปทรง -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="materialCategory">ประเภทวัสดุ:</label>
+                    <select class="form-control" id="materialCategory" name="materialCategory">
+                        <option value="">--เลือกประเภทวัสดุ--</option>
+                    </select>
+                </div>
+            </div>
+            <!-- <div class="col-md-4">
+                <div class="form-group">
+                    <label for="stainlessType">ประเภทสแตนเลส:</label>
+                    <select class="form-control" id="stainlessType" name="stainlessType">
+                        <option value="">--เลือกประเภท--</option>
+                    </select>
+                </div>
+            </div> -->
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="materialGrade">เกรดวัสดุ:</label>
+                    <select class="form-control" id="materialGrade" name="materialGrade">
+                        <option value="">--เลือกเกรด--</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="shapeId">รูปทรง:</label>
+                    <select class="form-control" id="shapeId" name="shapeId">
+                        <option value="">--เลือกรูปทรงของลวด--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="quantity">จำนวน (kg):</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity">
+                </div>
+            </div>
+        </div>
+        <fieldset>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="width">Width (mm):</label>
+                    <input type="number" class="form-control" id="width" name="width" step="0.01">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="height">Height (mm):</label>
+                    <input type="number" class="form-control" id="height" name="height" step="0.01" min="0">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="radius">Radius (mm):</label>
+                    <input type="number" class="form-control" id="radius" name="radius" step="0.01">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="tolerance">Tolerance (mm):</label>
+                    <input type="number" class="form-control" id="tolerance" name="tolerance" step="0.0001">
+                </div>
+            </div>
+        </div>
+    </fieldset>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="grindingLapOD">Grinding + Lap OD:</label>
+                    <select class="form-control" id="grindingLapOD" name="grindingLapOD" required>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="surfaceEmphasis">การเน้นผิว:</label>
+                    <select class="form-control" id="surfaceEmphasis" name="surfaceEmphasis" required>
+                        <option value="">--เลือกการเน้นผิว--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="wireType">Wire Type:</label>
+                    <select class="form-control" id="wireTypeId" name="wireTypeId" required>
+                        <option value="">--เลือก Wire Type--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="shapeMethod">วิธีทำ Shape:</label>
+                    <select class="form-control" id="shapeMethod" name="shapeMethod" required>
+                        <option value="">--เลือกวิธีทำ Shape--</option>
+                        <option value="inhouse">ทำเองในบริษัท</option>
+                        <option value="supplier">จ้าง Supplier</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="hasCutting">มีแผนก Cutting หรือไม่ (รวมมีดตัดและบูทตัด):</label>
+            <select class="form-control" id="hasCutting" name="hasCutting">
+                <option value="true">มี</option>
+                <option value="false">ไม่มี</option>
+            </select>
+        </div>
+        <button type="button" id="calculateButton" class="btn btn-primary mt-3">คำนวณราคา</button>
+    </form>
+
+    <div id="result" class="mt-4"></div>
+    <div id="resultDisplay" style="display: none;">
+        <h3>ผลการคำนวณ</h3>
+        <div id="calculationResult"></div>
+        <!-- <button id="saveButton" class="btn btn-success mt-3" style="display: none;">บันทึกข้อมูล</button> -->
+    </div>
+
+
+<script>
+function displayResult(result) {
+    console.log('Displaying result:', result);
+    
+    const calculationResult = document.getElementById('calculationResult');
+    const resultDisplay = document.getElementById('resultDisplay');
+
+    try {
+        // สร้าง HTML สำหรับแสดงผล
+        let detailsHtml = '';
+if (result.details && result.details.prices) {
+    const prices = result.details.prices;
+    detailsHtml = `
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <span>วัสดุ Tooling:</span>
+                    <small class="d-block text-muted">ขึ้นอยู่กับเงื่อนไข MaterialId, Tolerance, Surface</small>
+                </div>
+                <span>${result.details.materialId === 2 ? 'Carbide' : 'SKD-11'}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <span>ขนาดลูกรีด:</span>
+                    <small class="d-block text-muted">กำหนดจากขนาด Size: ${data.size} mm</small>
+                </div>
+                <span>${result.details.rollerType || '-'}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <span>ประเภท CRD:</span>
+                    <small class="d-block text-muted">Width: ${data.width} mm, Height: ${data.height} mm</small>
+                </div>
+                <span>${result.details.crdType || '-'}</span>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>ราคา Roller:</span>
+                    <span>${prices.roller.toLocaleString()} บาท</span>
+                </div>
+                <small class="text-muted">
+                    ${result.details.rollerCalculation || 'ราคาพื้นฐานตามขนาดและวัสดุ'}
+                </small>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>ราคา Grinding (Roller):</span>
+                    <span>${prices.rollerGrinding.toLocaleString()} บาท</span>
+                </div>
+                <small class="text-muted">
+                    ${result.details.rollerGrindingCalculation || 'ราคา Grinding ตามที่เลือก'}
+                </small>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>ราคา CRD:</span>
+                    <span>${prices.crd.toLocaleString()} บาท</span>
+                </div>
+                <small class="text-muted">
+                    ${result.details.crdCalculation || 'CRD ราคาพื้นฐาน: 5,000 × 4 = 20,000 บาท'}
+                </small>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>ราคา Grinding (CRD):</span>
+                    <span>${prices.crdGrinding.toLocaleString()} บาท</span>
+                </div>
+                <small class="text-muted">
+                    ${result.details.crdGrindingCalculation || 'ราคา Grinding สำหรับ CRD'}
+                </small>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>ราคา Shape:</span>
+                    <span>${prices.shape.toLocaleString()} บาท</span>
+                </div>
+                <small class="text-muted">
+                    ${result.details.shapeCalculation || 
+                      `ราคาพื้นฐาน: ${(prices.shape * 2).toLocaleString()} ÷ 2 = ${prices.shape.toLocaleString()} บาท (เนื่องจากทำ Inhouse)`}
+                </small>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>ราคา Cutting:</span>
+                    <span>${prices.cutting.toLocaleString()} บาท</span>
+                </div>
+                <small class="text-muted">
+                    ${result.details.cuttingCalculation || 
+                      'บูทตัด: 35,000 + มีดตัด: 17,900 = 52,900 บาท'}
+                </small>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>ราคา Bending:</span>
+                    <span>${prices.bending.toLocaleString()} บาท</span>
+                </div>
+                <small class="text-muted">
+                    ${result.details.bendingCalculation || 'ราคาตามขนาดที่เลือก'}
+                </small>
+            </li>
+        </ul>
+    `;
+}
+
+        calculationResult.innerHTML = `
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">ผลการคำนวณ</h5>
+                    <div class="price-section mb-4">
+                        <h6 class="total-price">ราคารวม: ${result.totalPrice.toLocaleString()} บาท</h6>
+                    </div>
+                    <div class="details-section">
+                        <h6>รายละเอียด:</h6>
+                        ${detailsHtml}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // แสดงผลลัพธ์และปุ่มบันทึก
+        resultDisplay.style.display = 'block';
+        const saveButton = document.getElementById('saveButton');
+        if (saveButton) {
+            saveButton.style.display = 'block';
+        }
+
+    } catch (error) {
+        console.error('Error displaying result:', error);
+        calculationResult.innerHTML = `
+            <div class="alert alert-danger">
+                เกิดข้อผิดพลาดในการแสดงผลลัพธ์: ${error.message}
+            </div>
+        `;
+    }
+}
+        </script>
+        <button id="saveButton" class="btn btn-success mt-3">บันทึกข้อมูล</button>
+    </div>
+</div>
+
+
+<style>
+    .loading {
+        opacity: 0.7;
+        pointer-events: none;
+    }
+
+    .price-section {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+
+    .total-price {
+        color: #28a745;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .details-section {
+        margin-top: 20px;
+    }
+
+    .form-section {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+
+    .validation-feedback {
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 4px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        const sizeInput = document.getElementById('size');
+        const calculateButton = document.getElementById('calculateButton');
+        const saveButton = document.getElementById('saveButton');
+    
+        if (sizeInput) {
+            sizeInput.addEventListener('change', function() {
+                updateToolingInfo(this.value);
+            });
+            sizeInput.addEventListener('input', function() {
+                updateToolingInfo(this.value);
+            });
+        }
+    
+        if (calculateButton) {
+            calculateButton.addEventListener('click', handleCalculation);
+        }
+    
+        if (saveButton) {
+            saveButton.addEventListener('click', handleSave);
+        }
+    
+        try {
+            await loadInitialData();
+        } catch (error) {
+            console.error('Error loading initial data:', error);
+        }
+    });
+    
+    async function loadInitialData() {
+        try {
+            // โหลดข้อมูลการเน้นผิว
+            const surfaceResponse = await fetch('/api/surface-emphasis');
+            if (!surfaceResponse.ok) {
+                throw new Error(`HTTP error! status: ${surfaceResponse.status}`);
+            }
+            const surfaceData = await surfaceResponse.json();
+            console.log('Received surface emphasis data:', surfaceData);
+    
+            const surfaceSelect = document.getElementById('surfaceEmphasis');
+            surfaceData.forEach(surfaceItem => {
+                const option = document.createElement('option');
+                option.value = surfaceItem.EmphasisType;
+                option.textContent = surfaceItem.Description;
+                option.dataset.requiresCarbide = surfaceItem.RequiresCarbide;
+                surfaceSelect.appendChild(option);
+            });
+    
+            // โหลดข้อมูลประเภทวัสดุ
+            const categoryResponse = await fetch('/api/material-categories');
+            const categories = await categoryResponse.json();
+            const categorySelect = document.getElementById('materialCategory');
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.Id;
+                option.textContent = category.CategoryName;
+                categorySelect.appendChild(option);
+            });
+    
+            // โหลดข้อมูลรูปทรง
+            const shapeResponse = await fetch('/api/shapes');
+            const shapes = await shapeResponse.json();
+            const shapeSelect = document.getElementById('shapeId');
+            shapes.forEach(shape => {
+                const option = document.createElement('option');
+                option.value = shape.Id;
+                option.textContent = `${shape.ShapeName}${shape.IsSpecial ? ' (Special)' : ' (Normal)'}`;
+                shapeSelect.appendChild(option);
+            });
+    
+            // โหลดข้อมูล Wire Types
+            const wireTypeResponse = await fetch('/api/wire-types');
+            const wireTypes = await wireTypeResponse.json();
+            const wireTypeSelect = document.getElementById('wireTypeId');
+            wireTypes.forEach(wireType => {
+                const option = document.createElement('option');
+                option.value = wireType.Id;
+                option.textContent = `${wireType.WireTypeName}${wireType.RequiresCarbide ? ' (Carbide)' : ''}`;
+                wireTypeSelect.appendChild(option);
+            });
+    
+            categorySelect.addEventListener('change', async function() {
+                const gradeSelect = document.getElementById('materialGrade');
+                gradeSelect.innerHTML = '<option value="">--เลือกเกรด--</option>';
+                
+                if (this.value) {
+                    const response = await fetch(`/api/material-grades/${this.value}`);
+                    const grades = await response.json();
+                    
+                    grades.forEach(grade => {
+                        const option = document.createElement('option');
+                        option.value = grade.Id;
+                        option.textContent = `${grade.GradeName}${grade.RequiresCarbide ? ' (Carbide)' : ''}`;
+                        option.setAttribute('data-category-id', this.value);
+                        gradeSelect.appendChild(option);
+                    });
+                }
+            });
+    
+        } catch (error) {
+            console.error('Error loading initial data:', error);
+            throw error;
+        }
+    }
+    
+    function updateToolingInfo(size) {
+        const infoDiv = document.getElementById('toolingInfo');
+        if (!infoDiv) {
+            console.error('Element toolingInfo not found');
+            return;
+        }
+        
+        size = parseFloat(size);
+        if (isNaN(size)) {
+            infoDiv.innerHTML = '';
+            return;
+        }
+        
+        let message = '';
+        if (size > 3.00) {
+            message = 'จะใช้ Turkhead 180';
+        } else if (size >= 1 && size <= 3) {
+            message = 'จะใช้ Turkhead 100 หรือ FENN';
+        } else if (size >= 0.2 && size < 1) {
+            message = 'จะใช้ Turkhead 100 + CRD60 x 4';
+        }
+        
+        if (message) {
+            infoDiv.innerHTML = `<div class="alert alert-info mt-2">${message}</div>`;
+        } else {
+            infoDiv.innerHTML = '';
+        }
+    }
+    
+    function validateFormData(data) {
+        if (!data.materialGrade) {
+            alert('กรุณาเลือกเกรดวัสดุ');
+            return false;
+        }
+    
+        if (!data.shapeId) {
+            alert('กรุณาเลือกรูปทรง');
+            return false;
+        }
+    
+        if (!data.size || data.size <= 0) {
+            alert('กรุณาระบุขนาดที่ถูกต้อง');
+            return false;
+        }
+    
+        if (!data.quantity || data.quantity <= 0) {
+            alert('กรุณาระบุจำนวนที่ถูกต้อง');
+            return false;
+        }
+    
+        if (!data.surfaceEmphasis) {
+            alert('กรุณาเลือกการเน้นผิว');
+            return false;
+        }
+    
+        if (!data.wireTypeId) {
+            alert('กรุณาเลือก Wire Type');
+            return false;
+        }
+    
+        if (!data.shapeMethod) {
+            alert('กรุณาเลือกวิธีทำ Shape');
+            return false;
+        }
+    
+        return true;
+    }
+    
+    async function handleCalculation() {
+        const calculationResult = document.getElementById('calculationResult');
+        try {
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('calculateButton').disabled = true;
+    
+            const form = document.getElementById('profileForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+    
+            if (!validateFormData(data)) {
+                return;
+            }
+    
+            ['size', 'quantity', 'width', 'height', 'radius', 'tolerance'].forEach(field => {
+                data[field] = parseFloat(data[field]) || 0;
+            });
+    
+            data.hasCutting = data.hasCutting === 'true';
+            data.grindingLapOD = data.grindingLapOD === 'yes';
+    
+            const response = await fetch('/api/calculate-profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const result = await response.json();
+            console.log('Calculation result:', result);
+            window.lastCalculationResult = result;
+            displayResult(result);
+    
+        } catch (error) {
+            console.error('Calculation error:', error);
+            if (calculationResult) {
+                calculationResult.innerHTML = `
+                    <div class="alert alert-danger">
+                        เกิดข้อผิดพลาดในการคำนวณ: ${error.message}
+                    </div>
+                `;
+            }
+        } finally {
+            document.getElementById('loadingIndicator').style.display = 'none';
+            document.getElementById('calculateButton').disabled = false;
+        }
+    }
+    
+    async function handleSave() {
+        try {
+            if (!window.lastCalculationResult) {
+                alert('กรุณาคำนวณราคาก่อนบันทึกข้อมูล');
+                return;
+            }
+    
+            const response = await fetch('/api/save-profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    calculationData: window.lastCalculationResult
+                })
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const result = await response.json();
+            if (result.success) {
+                alert('บันทึกข้อมูลเรียบร้อยแล้ว');
+                document.getElementById('profileForm').reset();
+                document.getElementById('resultDisplay').style.display = 'none';
+            } else {
+                throw new Error(result.error || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            }
+    
+        } catch (error) {
+            console.error('Error saving data:', error);
+            alert(`เกิดข้อผิดพลาดในการบันทึกข้อมูล: ${error.message}`);
+        }
+    }
+    
+    function displayResult(result) {
+    console.log('Display result:', result);
+    
+    const calculationResult = document.getElementById('calculationResult');
+    const resultDisplay = document.getElementById('resultDisplay');
+    
+    if (!calculationResult || !resultDisplay) {
+        console.error('Required elements not found');
+        return;
+    }
+
+    try {
+        const prices = result.details.prices;
+        const calculations = result.details.calculations;
+
+        const detailsHtml = `
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">ผลการคำนวณ</h5>
+                    <div class="price-section mb-4">
+                        <h6 class="total-price">ราคารวม: ${result.totalPrice.toLocaleString()} บาท</h6>
+                    </div>
+                    <div class="details-section">
+                        <h6>รายละเอียด:</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <div>
+                                    <span>วัสดุ Tooling</span>
+                                    <small class="d-block text-muted">${result.details.materialId === 2 ? 'Carbide' : 'SKD-11'}</small>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>ราคา Roller</span>
+                                    <span>${prices.roller.toLocaleString()} บาท</span>
+                                </div>
+                                <small class="text-muted">${calculations.roller}</small>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>Grinding (Roller)</span>
+                                    <span>${prices.rollerGrinding.toLocaleString()} บาท</span>
+                                </div>
+                                <small class="text-muted">${calculations.rollerGrinding}</small>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>ราคา CRD</span>
+                                    <span>${prices.crd.toLocaleString()} บาท</span>
+                                </div>
+                                <small class="text-muted">${calculations.crd}</small>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>Grinding (CRD)</span>
+                                    <span>${prices.crdGrinding.toLocaleString()} บาท</span>
+                                </div>
+                                <small class="text-muted">${calculations.crdGrinding}</small>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>ราคา Shape</span>
+                                    <span>${prices.shape.toLocaleString()} บาท</span>
+                                </div>
+                                <small class="text-muted">${calculations.shape}</small>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>ราคา Cutting</span>
+                                    <span>${prices.cutting.toLocaleString()} บาท</span>
+                                </div>
+                                <small class="text-muted">${calculations.cutting}</small>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>ราคา Bending</span>
+                                    <span>${prices.bending.toLocaleString()} บาท</span>
+                                </div>
+                                <small class="text-muted">${calculations.bending}</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        calculationResult.innerHTML = detailsHtml;
+        resultDisplay.style.display = 'block';
+        
+        const saveButton = document.getElementById('saveButton');
+        if (saveButton) {
+            saveButton.style.display = 'block';
+        }
+
+    } catch (error) {
+        console.error('Error displaying result:', error);
+        calculationResult.innerHTML = `
+            <div class="alert alert-danger">
+                เกิดข้อผิดพลาดในการแสดงผลลัพธ์: ${error.message}
+            </div>
+        `;
+    }
+}
+
+async function handleSave() {
+    if (!window.lastCalculationResult) {
+        alert('กรุณาคำนวณราคาก่อนบันทึก');
+        return;
+    }
+
+    try {
+        await saveQuotation(window.lastCalculationResult);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('เกิดข้อผิดพลาดในการบันทึก');
+    }
+}
+
+// เพิ่มฟังก์ชัน saveQuotation
+async function saveQuotation(calculationResult) {
+    try {
+        const requestData = {
+            profileCalculationId: calculationResult.id,
+            customerName: document.getElementById('customerName').value,
+            materialGradeId: document.getElementById('materialGrade').value,
+            shapeId: document.getElementById('shapeId').value,
+            size: parseFloat(document.getElementById('size').value),
+            width: parseFloat(document.getElementById('width').value),
+            height: parseFloat(document.getElementById('height').value),
+            quantity: parseInt(document.getElementById('quantity').value),
+            tolerance: parseFloat(document.getElementById('tolerance').value),
+            grindingLapOD: document.getElementById('grindingLapOD').value === 'yes',
+            hasCutting: document.getElementById('hasCutting').value === 'true',
+            // เพิ่ม SurfaceEmphasis
+            surfaceEmphasis: document.getElementById('surfaceEmphasis').value,
+            // เพิ่ม WireTypeId
+            wireTypeId: document.getElementById('wireTypeId').value,
+            // เพิ่ม ShapeMethod
+            shapeMethod: document.getElementById('shapeMethod').value,
+            materialId: calculationResult.details.materialId,
+            rollerType: calculationResult.details.rollerType,
+            crdType: calculationResult.details.crdType,
+            rollerPrice: calculationResult.details.prices.roller,
+            crdPrice: calculationResult.details.prices.crd,
+            shapePrice: calculationResult.details.prices.shape,
+            cuttingPrice: calculationResult.details.prices.cutting,
+            bendingPrice: calculationResult.details.prices.bending,
+            totalPrice: calculationResult.totalPrice,
+            createdBy: 'current_user'
+        };
+
+        console.log('Sending data:', requestData);
+
+        const response = await fetch('/api/save-quotation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert('บันทึกใบเสนอราคาเรียบร้อย');
+            if (confirm('ต้องการดูประวัติการเสนอราคาหรือไม่?')) {
+                window.location.href = '/quotation-history';
+            }
+        } else {
+            throw new Error(result.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('เกิดข้อผิดพลาดในการบันทึก');
+        throw error;
+    }
+}
+
+// เพิ่ม event listener สำหรับปุ่มบันทึก
+document.getElementById('saveButton').addEventListener('click', handleSave);
+
+
+    </script>
+    
+    <!-- <script src="js/constants.js"></script> -->
+    <!-- <script src="js/table/profile-calculation.js"></script> -->

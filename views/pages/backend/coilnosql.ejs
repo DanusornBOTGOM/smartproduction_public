@@ -1,0 +1,207 @@
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="mb-4 d-sm-flex align-items-center justify-content-between">
+        <h1 class="mb-0 text-gray-800 h3"><%- heading %></h1>
+        <!-- <div>
+            <a href="#" class="shadow-sm d-none d-sm-inline-block btn btn-sm btn-success"><i class="fas fa-plus fa-sm text-white-50"></i> Add new category</a>
+        </div> -->
+    </div>
+
+    <div class="mb-3">
+        <form id="filterForm" class="form-inline">
+            <div class="form-group mr-2">
+                
+                <label  for="filterDate" class="mr-2">เลือกวันที่:</label>
+                <input type="date" id="filterDate" name="filterDate" class="form-control" value="<%= filterDate %>">
+            </div>
+            <div class="form-group mr-2">
+                <label for="filterSection" class="mr-2">เลือก Section:</label>
+                <select id="filterSection" name="filterSection" class="form-control">
+                    <option value="">ทั้งหมด</option>
+                    <option value="drawing" <%= filterSection === 'drawing' ? 'selected' : '' %>>Drawing</option>
+                    <option value="cutting" <%= filterSection === 'cutting' ? 'selected' : '' %>>Cutting</option>
+                    <option value="co" <%= filterSection === 'co' ? 'selected' : '' %>>CO2#1-3</option>
+                    <option value="annealing" <%= filterSection === 'annealing' ? 'selected' : '' %>>Annealing</option>
+                    <option value="centerless_grinding" <%= filterSection === 'centerless_grinding' ? 'selected' : '' %>>CGM</option>
+                    <!-- ไว้เพิ่มตัวเลือก -->
+                </select>
+            </div>
+
+            <div class="form-group mr-2">
+                <div class="form-group mr-2">
+                    <label for="searchDocNo" class="mr-2">ค้นหา MFG No:</label>
+                    <input type="text" id="searchDocNo" name="searchDocNo" class="form-control" value="<%= searchDocNo %>" oninput="debounceSearch(this.value)">
+                </div>
+                <button id="tableFilterButton" type="submit" class="btn btn-primary">ค้นหา</button>
+            </form>
+            </div>
+
+            <button id="tableFilterButton" type="submit" class="btn btn-primary">Filter</button>
+        </form>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+        <div class="table-responsive">
+            <% if(data.length) { %>
+                <table id="productionTable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr class="text-white bg-primary">
+                            <th>MachineCode</th>
+                            <th>Section (แผนก)</th>
+                            <th>MFG No.</th>
+                            <th>GRADE</th>
+                            <th>WIP (น้ำหนักออก)</th>
+                            <th>ItemType (ประเภท)</th>
+                            <th>Coil ออก</th>
+                            <th>เวลายิงงานออก</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(let row=0; row < data.length; row++) { %>
+                            <tr>
+                                <td><%=data[row].MachineCode%></td>
+                                <td><%=data[row].SectionID%></td>
+                                <td><%=data[row].DocNo%></td>
+                                <td><%=data[row].PartName%></td>
+                                <td><%=data[row].WIPWeight%></td>
+                                <td><%=data[row].ItemType%></td>
+                                <td><%=data[row].OutRSNCode%></td>
+                                <td><%= moment(row.PrintTime).format('DD/MM/YYYY HH:mm:ss') %></td>
+                                <td style="width: 200px">
+                                    <button onclick="editCoil('<%=data[row].DocNo%>', '<%=data[row].MachineCode%>', '<%=data[row].SectionID%>', '<%=data[row].OutRSNCode%>')" class="btn btn-warning">แก้ไข</button>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    <% for(let i = 1; i <= totalPages; i++) { %>
+                        <a href="/backend/coilnosql?page=<%= i %><%= filterDate ? `&filterDate=${filterDate}` : '' %><%= filterSection ? `&filterSection=${filterSection}` : '' %>" 
+                            class="btn btn-sm btn-outline-primary <%= currentPage == i ? 'active' : '' %>"><%= i %></a>
+                    <% } %>
+                </div>
+
+            <% } else { %>
+                <p>No category found</p>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for editing Coil -->
+<div class="modal fade" id="editCoilModal" tabindex="-1" role="dialog" aria-labelledby="editCoilModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCoilModalLabel">แก้ไข MachineCode และ SectionID ใหม่</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"> 
+                <form id="editCoilForm">
+                    <input type="hidden" id="editDocNo" name="DocNo">
+                    <input type="hidden" id="editOutRSNCode" name="OutRSNCode"> <!-- เพิ่มบรรทัดนี้ -->
+                    <div class="form-group">
+                        <label for="newMachineCode">MachineCode ใหม่ :</label>
+                        <select class="form-control" id="newMachineCode" name="newMachineCode" required>
+                            <% machineCodes.forEach(function(code) { %>
+                                <option value="<%= code %>"><%= code %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="newSectionID">SectionID ใหม่ :</label>
+                        <select class="form-control" id="newSectionID" name="newSectionID" required>
+                            <% sectionIDs.forEach(function(id) { %>
+                                <option value="<%= id %>"><%= id %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                <button type="button" class="btn btn-primary" onclick="submitEditCoil()">บันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+function editCoil(docNo, machineCode, sectionID, outRSNCode) {
+    document.getElementById('editDocNo').value = docNo;
+    document.getElementById('editOutRSNCode').value = outRSNCode; 
+    document.getElementById('newMachineCode').value = machineCode;
+    document.getElementById('newSectionID').value = sectionID;
+    $('#editCoilModal').modal('show');
+}
+
+async function submitEditCoil() {
+    const formData = new FormData(document.getElementById('editCoilForm'));
+    const docNo = document.getElementById('editDocNo').value;
+    const outRSNCode = document.getElementById('editOutRSNCode').value; 
+    
+    const data = {
+        DocNo: docNo,
+        newMachineCode: formData.get('newMachineCode'),
+        newSectionID: formData.get('newSectionID'),
+        OutRSNCode: outRSNCode 
+    };
+
+    try {
+        const response = await fetch('/backend/edit_coilnosql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        if (response.ok && result.success) {
+            alert('แก้ไขสำเร็จ');
+            location.reload();
+        } else {
+            throw new Error(result.message || `HTTP error! status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + error.message);
+    }
+    $('#editCoilModal').modal('hide');
+}
+
+let debounceTimer;
+
+function debounceSearch(value) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        performSearch(value);
+    }, 2000); // มิลลิวินาที ตัวปรับ เวลาก่อนค้าหา
+}
+
+function performSearch(value) {
+    const filterDate = document.getElementById('filterDate').value;
+    const filterSection = document.getElementById('filterSection').value;
+    
+    window.location.href = `/backend/coilnosql?filterDate=${filterDate}&filterSection=${filterSection}&searchDocNo=${value}`;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('filterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const filterDate = document.getElementById('filterDate').value;
+        const filterSection = document.getElementById('filterSection').value;
+        const searchDocNo = document.getElementById('searchDocNo').value;
+        
+        window.location.href = `/backend/coilnosql?filterDate=${filterDate}&filterSection=${filterSection}&searchDocNo=${searchDocNo}`;
+    });
+});
+
+</script>

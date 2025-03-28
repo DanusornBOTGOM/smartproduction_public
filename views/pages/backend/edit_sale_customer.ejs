@@ -1,0 +1,100 @@
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between">
+        <h1 class="h3 mb-0 text-gray-800"><%- heading %></h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2 card">
+            <div class="card-body">
+                <% if(messages.error) { %>
+                <div class="alert alert-danger"><%- messages.error %></div>
+                <% } %>
+                <% if(messages.success) { %>
+                <div class="alert alert-success"><%- messages.success %></div>
+                <% } %>
+
+                <form action="/backend/update_sale_customer/<%= customer.SpecialCustomerId %>" method="POST">                    
+                    <div class="form-group row">
+                        <label for="CompanyName" class="col-md-4 col-form-label">CompanyName: </label>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" name="CompanyName" value="<%= customer.CompanyName %>">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="ContactName" class="col-md-4 col-form-label">Contact Name: </label>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" name="ContactName" value="<%= customer.ContactName %>">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="MobilePhone" class="col-md-4 col-form-label">MobilePhone: </label>  
+                        <div class="col-md-8">
+                          <input type="tel" class="form-control" name="MobilePhone" value="<%= customer.ContactPhone %>">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="CategoryMarket" class="col-md-4 col-form-label">Market Segment: </label>
+                        <div class="col-md-8">
+                          <select name="CategoryMarket" id="CategoryMarket" class="form-control">
+                              <% marketSegments.forEach(function(segment) { %>
+                                <option value="<%= segment.SegmentId %>" <%= customer.MarketSegment == segment.segmentName ? 'selected' : '' %>><%= segment.SegmentName %></option>                     
+                              <% }); %>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="MainProduct" class="col-md-4 col-form-label">Main Product: </label>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" name="MainProduct" value="<%= customer.MainProduct %>">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="Inquiry" class="col-md-4 col-form-label">Inquiry :</label>
+                        <div class="col-md-8">
+                          <textarea class="form-control" name="Inquiry" rows="2"><%= customer.Inquiry %></textarea>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="Application" class="col-md-4 col-form-label">Application :</label>
+                        <div class="col-md-8">
+                          <textarea class="form-control" name="Application" rows="1"><%= customer.Application %></textarea>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="Details" class="col-md-4 col-form-label">Detail :</label>  
+                        <div class="col-md-8">
+                          <textarea class="form-control" name="Detail" rows="5"><%= customer.Details %></textarea>  
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="Detail" class="col-md-4 col-form-label">Remark :</label>
+                        <div class="col-md-8">
+                          <textarea class="form-control" name="Remark" rows="3"><%= customer.Remark %></textarea>
+                        </div>
+                      </div>
+          
+                      <div class="form-group row">
+                        <label for="SaleName" class="col-md-4 col-form-label">Sale Name :</label>
+                        <div class="col-md-8">
+                          <select name="SaleName" id="SaleName" class="form-control">
+                              <option value="">เลือก Sales</option>
+                              <% salesReps.forEach(function(rep) { %>
+                                  <option value="<%= rep.SalesRepId %>"> <%= customer.SalesRepName == rep.FullName ? 'selected' : '' %>><%= rep.FullName %></option>
+                              <% }); %>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-md-8 offset-md-4">
+                            <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
+                        </div>
+                      </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>

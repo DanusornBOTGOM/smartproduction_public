@@ -1,0 +1,113 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Filter Controls -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label>Start Date:</label>
+                            <input type="date" id="startDate" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label>End Date:</label>
+                            <input type="date" id="endDate" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label>Department:</label>
+                            <select id="department" class="form-control">
+                                <option value="Drawing">Drawing</option>
+                                <option value="Profile">Profile</option>
+                                <option value="BAR2">BAR2</option>
+                                <option value="BAR1">BAR1</option>
+                                <option value="CGM">CGM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Working Hours Table -->
+                    <div class="table-responsive">
+                        <table id="workingHoursTable" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Machine Code</th>
+                                    <th>Week 1 (1-6)</th>
+                                    <th>Week 2 (7-13)</th>
+                                    <th>Week 3 (14-20)</th>
+                                    <th>Week 4 (21-27)</th>
+                                    <th>Week 5 (28-31)</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- เพิ่ม JavaScript สำหรับจัดการข้อมูล -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ฟังก์ชันโหลดข้อมูล
+    async function loadWorkingHours() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const department = document.getElementById('department').value;
+
+    try {
+        console.log('Sending request with params:', { startDate, endDate, department });
+        
+        const response = await fetch(`/api/production/working-hour/data?startDate=${startDate}&endDate=${endDate}&department=${department}`);
+        const data = await response.json();
+        
+        console.log('Received data:', data);  
+
+        updateTable(data);
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
+}
+
+function updateTable(data) {
+    const tbody = document.querySelector('#workingHoursTable tbody');
+    tbody.innerHTML = '';
+
+    if (!Array.isArray(data) || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center">No data available</td></tr>';
+        return;
+    }
+
+    data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${row.BaseMachineCode || ''}</td>
+            <td>${row['1-6'] ? parseFloat(row['1-6']).toFixed(2) : '0.00'}</td>
+            <td>${row['7-13'] ? parseFloat(row['7-13']).toFixed(2) : '0.00'}</td>
+            <td>${row['14-20'] ? parseFloat(row['14-20']).toFixed(2) : '0.00'}</td>
+            <td>${row['21-27'] ? parseFloat(row['21-27']).toFixed(2) : '0.00'}</td>
+            <td>${row['28-31'] ? parseFloat(row['28-31']).toFixed(2) : '0.00'}</td>
+            <td>${row.Total ? parseFloat(row.Total).toFixed(2) : '0.00'}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+    // Event Listeners
+    document.getElementById('startDate').addEventListener('change', loadWorkingHours);
+    document.getElementById('endDate').addEventListener('change', loadWorkingHours);
+    document.getElementById('department').addEventListener('change', loadWorkingHours);
+
+    // Set default dates and load initial data
+    const today = new Date();
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+    document.getElementById('startDate').value = firstDayOfMonth.toISOString().split('T')[0];
+    document.getElementById('endDate').value = lastDayOfMonth.toISOString().split('T')[0];
+
+    loadWorkingHours();
+});
+</script>

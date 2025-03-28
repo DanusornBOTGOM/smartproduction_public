@@ -1,0 +1,51 @@
+1|app       | Received request with params: 7D515-215-000550W022
+1|app       | Received request with params: 7D515-215-000550W022
+0|app       | Error: RequestError: [Microsoft][ODBC Driver 17 for SQL Server]Query timeout expired
+0|app       |     at handleError (D:\T\smartproduction\node_modules\mssql\lib\msnodesqlv8\request.js:276:21)
+0|app       |     at StreamEvents.emit (node:events:519:28)
+0|app       |     at D:\T\smartproduction\node_modules\msnodesqlv8\lib\reader.js:83:20
+0|app       |     at Array.forEach (<anonymous>)
+0|app       |     at Query.routeStatementError (D:\T\smartproduction\node_modules\msnodesqlv8\lib\reader.js:73:19)
+0|app       |     at D:\T\smartproduction\node_modules\msnodesqlv8\lib\reader.js:239:12
+0|app       |     at D:\T\smartproduction\node_modules\msnodesqlv8\lib\driver.js:191:13
+0|app       |     at Immediate.<anonymous> (D:\T\smartproduction\node_modules\msnodesqlv8\lib\driver.js:167:9)
+0|app       |     at process.processImmediate (node:internal/timers:478:21) {
+0|app       |   code: 'EREQUEST',
+0|app       |   originalError: [Error: [Microsoft][ODBC Driver 17 for SQL Server]Query timeout expired] {
+0|app       |     sqlstate: 'HYT00',
+0|app       |     code: 0,
+0|app       |     severity: 0,
+0|app       |     serverName: '',
+0|app       |     procName: '',
+0|app       |     lineNumber: 0
+0|app       |   },
+0|app       |   number: 0,
+0|app       |   lineNumber: 0,
+0|app       |   state: 'HYT00',
+0|app       |   class: 0,
+0|app       |   serverName: '',
+0|app       |   procName: ''
+0|app       | }
+1|app       | Error in ProductionService - submitProductionData: Error: บาร์โค้ดนี้เคยถูกบันทึกไปแล้ว
+1|app       |     at ProductionDailyRepository.submitProductionData (D:\T\smartproduction\app\production\data-access\production-daily.repository.js:71:19)
+1|app       |     at runNextTicks (node:internal/process/task_queues:60:5)
+1|app       |     at process.processImmediate (node:internal/timers:449:9)
+1|app       |     at runNextTicks (node:internal/process/task_queues:60:5)
+1|app       |     at runNextTicks (node:internal/process/task_queues:60:5)
+1|app       |     at process.processImmediate (node:internal/timers:449:9)
+1|app       |     at async ProductionDailyService.submitProductionData (D:\T\smartproduction\app\production\domain\production-daily.service.js:22:28)
+1|app       |     at async D:\T\smartproduction\app\production\entry-points\api\production.routes.js:372:24
+1|app       | Error: Error: บาร์โค้ดนี้เคยถูกบันทึกไปแล้ว
+1|app       |     at ProductionDailyRepository.submitProductionData (D:\T\smartproduction\app\production\data-access\production-daily.repository.js:71:19)
+1|app       |     at runNextTicks (node:internal/process/task_queues:60:5)
+1|app       |     at process.processImmediate (node:internal/timers:449:9)
+1|app       |     at async ProductionDailyService.submitProductionData (D:\T\smartproduction\app\production\domain\production-daily.service.js:22:28)
+1|app       |     at async D:\T\smartproduction\app\production\entry-points\api\production.routes.js:372:24
+0|app       | [DEBUG] Running keepalive check for SALE
+0|app       | [DEBUG] Keepalive successful for SALE
+1|app       |     at async D:\T\smartproduction\app\production\entry-points\api\production.routes.js:372:24
+0|app       | [DEBUG] Running keepalive check for SALE
+0|app       | [DEBUG] Keepalive successful for SALE
+0|app       | [DEBUG] Running keepalive check for SALE
+0|app       | [DEBUG] Keepalive successful for SALE
+0|app       | [DEBUG] Keepalive successful for SALE

@@ -1,0 +1,184 @@
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Customer Details</h1>
+        <div>
+            <a href="/backend/sales/sale_new_customers" class="btn btn-secondary">
+                <i class="fas fa-arrow-left fa-sm text-white-40"></i> Back to List
+            </a>
+            <button id="editButton" class="btn btn-primary btn-lg shadow-sm">
+                <i class="fas fa-edit fa-sm text-white-40 mr-2"></i> Edit
+            </button>
+            <button id="saveButton" class="btn btn-success btn-lg shadow-sm" style="display: none;">
+                <i class="fas fa-save fa-sm text-white-40 mr-2"></i> Save
+            </button>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form id="customerForm" action="/backend/sales/update_sale_customer/<%= customer.SpecialCustomerId %>" method="POST">
+                <div class="form-group row border-bottom pb-1">
+                    <label class="col-sm-3 col-form-label font-weight-bold">Created:</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext" ><%= moment.utc(customer.CreatedAt).format('DD/MM/YYYY HH:mm') %></p>
+                    </div>
+                </div>
+                <div class="form-group row border-bottom pb-1">
+                    <label class="col-sm-3 col-form-label font-weight-bold">Updated:</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext"><%= customer.UpdatedAt ? moment.utc(customer.UpdatedAt).format('DD/MM/YYYY HH:mm') : '-' %></p>
+                    </div>
+                </div>
+                <div class="form-group row border-bottom pb-1">
+                    <label class="col-sm-3 col-form-label font-weight-bold">Company Name:</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext"><%= customer.CompanyName %></p>
+                        <input type="text" class="form-control" id="companyNameInput" name="CompanyName" value="<%= customer.CompanyName %>" style="display: none;">
+                    </div>
+                </div>
+                <div class="form-group row border-bottom pb-1">
+                    <label class="col-sm-3 col-form-label font-weight-bold">Contact Name:</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext"><%= customer.ContactName %></p>
+                        <input type="text" class="form-control" id="contactNameInput" name="ContactName" value="<%= customer.ContactName %>" style="display: none;">
+                    </div>
+                </div>
+                <div class="form-group row border-bottom pb-1">
+                    <label class="col-sm-3 col-form-label font-weight-bold">Mobile Phone:</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext"><%= customer.ContactPhone %></p>
+                        <input type="text" class="form-control" id="contactPhoneInput" name="ContactPhone" value="<%= customer.ContactPhone %>" style="display: none;">
+                    </div>
+                </div>
+                <div class="form-group row border-bottom pb-1">
+                    <label class="col-sm-3 col-form-label font-weight-bold">Market Segment:</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext"><%= customer.MarketSegment %></p>
+                        <select class="form-control" id="marketSegmentsInput" name="CategoryMarket" style="display: none;">
+                            <% marketSegments.forEach(function(segment) { %>
+                                <option value="<%= segment.SegmentId %>" <%= customer.MarketSegment == segment.SegmentName ? 'selected' : '' %>><%= segment.SegmentName %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row border-bottom pb-1">
+                    <label class="col-sm-3 col-form-label font-weight-bold">Main Product:</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext"><%= customer.MainProduct || '-' %></p>
+                        <input type="text" class="form-control" id="mainProductInput" name="MainProduct" value="<%= customer.MainProduct %>" style="display: none;">
+                    </div>
+                </div>
+                <div class="form-group row border-bottom pb-1">
+                    <label class="col-sm-3 col-form-label font-weight-bold">Inquiry:</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext"><%= customer.Inquiry %></p>
+                        <input type="text" class="form-control" id="inquiryInput" name="Inquiry" value="<%= customer.Inquiry %>" style="display: none;">
+                    </div>
+                </div>
+                <div class="form-group row border-bottom pb-1">
+                    <label class="col-sm-3 col-form-label font-weight-bold">Application:</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext"><%= customer.Application %></p>
+                        <input type="text" class="form-control" id="applicationInput" name="Application" value="<%= customer.Application %>" style="display: none;">
+                    </div>
+                </div>
+                <div class="form-group row border-bottom pb-1">
+                    <label class="col-md-3 col-form-label font-weight-bold">Details:</label>
+                    <div class="col-md-9">
+                        <p class="form-control-plaintext" style="white-space: pre-line;"><%= customer.Details %></p>
+                        <textarea class="form-control auto-resize" id="detailsInput" name="Details" rows="3" style="display: none;"><%= customer.Details %></textarea>
+                    </div>
+                </div>
+                <div class="form-group row border-bottom pb-1">
+                    <label class="col-sm-3 col-form-label font-weight-bold">Remark:</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext"><%= customer.Remark %></p>
+                        <textarea class="form-control" id="remarkInput" name="Remark" rows="3" style="display: none;"><%= customer.Remark %></textarea>
+                    </div>
+                </div>
+                <div class="form-group row border-bottom pb-1">
+                    <label class="col-sm-3 col-form-label font-weight-bold">Sales Name:</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext"><%= customer.SalesRepName %></p>
+                        <select class="form-control" id="saleRepNameInput" name="SaleName" style="display: none;">
+                            <% salesReps.forEach(function(rep) { %>
+                                <option value="<%= rep.SalesRepId %>" <%= customer.SalesRepName == rep.FullName ? 'selected' : '' %>><%= rep.FullName %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+                <!-- <div class="form-group row">
+                    <div class="col-sm-9 offset-sm-3">
+                        <a href="/backend/sale_new_customers" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left fa-sm"></i> Back to List
+                        </a>
+                    </div> -->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ฟังก์ชันสำหรับปรับขนาด textarea
+    function autoResizeTextarea(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    // Event listener เมื่อโหลดหน้า
+    document.addEventListener('DOMContentLoaded', function() {
+        // ปรับขนาด textarea อัตโนมัติ
+        const textareas = document.querySelectorAll('textarea.auto-resize');
+        textareas.forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                autoResizeTextarea(this);
+            });
+        });
+
+        // Event listener สำหรับปุ่ม Edit
+        document.getElementById('editButton').addEventListener('click', function() {
+            // ซ่อนข้อความแบบ plaintext
+            document.querySelectorAll('.form-control-plaintext').forEach(function(el) {
+                el.style.display = 'none';
+            });
+
+            // แสดง input fields และ textareas
+            document.querySelectorAll('.form-control, select.form-control').forEach(function(el) {
+                el.style.display = 'block';
+                // ถ้าเป็น textarea ให้ปรับขนาด
+                if (el.tagName.toLowerCase() === 'textarea') {
+                    setTimeout(() => autoResizeTextarea(el), 0);
+                }
+            });
+
+            // ซ่อนปุ่ม Edit และแสดงปุ่ม Save
+            this.style.display = 'none';
+            document.getElementById('saveButton').style.display = 'inline-block';
+        });
+
+        // Event listener สำหรับปุ่ม Save
+        document.getElementById('saveButton').addEventListener('click', function() {
+            if (validateForm(document.getElementById('customerForm'))) {
+                document.getElementById('customerForm').submit();
+            }
+        });
+    });
+
+    // ฟังก์ชัน validate form
+    function validateForm(form) {
+        var isValid = true;
+        form.querySelectorAll('[required]').forEach(function(field) {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add('is-invalid');
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+        if (!isValid) {
+            alert('Please fill in all required fields');
+        }
+        return isValid;
+    }
+</script>

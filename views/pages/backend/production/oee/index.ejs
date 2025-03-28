@@ -1,0 +1,489 @@
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">OEE Department Dashboard</h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">OEE Analytics</a>
+    </div>
+    <div id="loadingOverlay" class="d-none">
+        <div class="spinner-border text-primary"></div>
+        <div>Loading...</div>
+    </div>
+    <div class="container-fluid">
+        <!-- OEE Dashboard -->
+        <!-- <div class="row">
+            OEE Summary Cards
+            <div class="col-xl-3 col-lg-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">OEE</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="oeeValue">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="col-xl-3 col-lg-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Availability</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="availabilityValue">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="col-xl-3 col-lg-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Performance</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="performanceValue">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="col-xl-3 col-lg-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Quality</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="qualityValue">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    
+        <!-- Charts Section -->
+<div class="card shadow mb-4">
+    <!-- แก้แค่ส่วน header แต่คงโครงสร้างเดิม -->
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <div>
+            <h6 class="m-0 font-weight-bold text-primary">Overall Equipment Effectiveness (OEE)</h6>
+            <small class="text-muted">เลือก แผนก(Department) และวันที่เริ่มต้นกับวันที่สิ้นสุดในการแสดงผล OEE</small>
+        </div>
+        <div class="chart-controls">
+            <div class="input-group input-group-sm">
+                <!-- ส่วน controls ใหม่ -->
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Department</span>
+                </div>
+            <select id="departmentSelect" class="form-control mr-2">
+                <% departments.forEach(function(dept) { %>
+                    <option value="<%= dept %>"><%= dept %></option>
+                <% }); %>
+            </select>
+            <div class="input-group-prepend ml-2">
+                <span class="input-group-text">Date</span>
+            </div>
+            <input type="date" id="startDate" class="form-control">
+            <input type="date" id="endDate" class="form-control ml-2">
+            <button id="searchBtn" class="btn btn-primary btn-sm ml-2">
+                <i class="fas fa-search"></i> View
+            </button>
+            <button id="exportBtn" class="btn btn-secondary btn-sm ml-2">
+                <i class="fas fa-download"></i> Export
+            </button>
+        </div>
+    </div>
+</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="chart-container">
+                            <canvas id="oeeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="chart-container">
+                            <canvas id="availabilityChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="chart-container">
+                            <canvas id="qualityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Detailed Machine Performance Table -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Machine Performance Details</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="machinePerformanceTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Machine Code</th>
+                                <th>OEE (%)</th>
+                                <th>Availability (%)</th>
+                                <th>Performance (%)</th>
+                                <th>Quality (%)</th>
+                                <th>Downtime (min)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- ข้อมูลจะถูกเพิ่มด้วย JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+    .chart-container {
+        position: relative;
+        height: 200px;
+        margin-bottom: 1rem;
+    }
+    
+    .chart-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .input-group-sm > .form-control {
+        height: calc(1.5em + 0.5rem + 2px);
+    }
+
+    #loadingOverlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.8);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+    </style>
+
+<script src="/backend/css/production/oee-dashboard.css"></script>    
+<script src="/backend/vendor/chart.js/Chart.min.js"></script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchBtn = document.getElementById('searchBtn');
+    let charts = {}; // เก็บ instances ของ charts
+
+    // ลบบรรทัดนี้ออก
+    // document.getElementById('searchBtn').addEventListener('click', updateTable);
+
+    async function fetchOEEData() {
+    try {
+        const department = document.getElementById('departmentSelect').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        const url = `/api/production/oee/dashboard/data?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&department=${encodeURIComponent(department)}`;
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Received data:', data);
+
+        if (data && data.overall) {
+            // ลบส่วนนี้ออก เพราะไม่มี cards แล้ว
+            // updateDisplay(data.overall);
+            
+            // อัพเดตเฉพาะส่วนที่ยังใช้
+            updateCharts(data.overall);
+            updateMachineTable(data);
+        }
+    } catch (error) {
+        console.error('Error fetching OEE data:', error);
+        // แสดง error message แทน
+        showError('Failed to fetch data. Please try again.');
+    } finally {
+        hideLoading();
+    }
+}
+
+// เพิ่มฟังก์ชันแสดง error
+function showError(message) {
+    // เพิ่ม error alert ใน HTML
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'alert alert-danger';
+    errorDiv.textContent = message;
+    document.querySelector('.card-body').prepend(errorDiv);
+    
+    // ซ่อน error หลัง 3 วินาที
+    setTimeout(() => errorDiv.remove(), 3000);
+}
+
+    function setDefaultDates() {
+        const today = new Date();
+        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        
+        startDateInput.valueAsDate = firstDayOfMonth;
+        endDateInput.valueAsDate = today;
+    }
+
+    function updateCharts(data) {
+    const metrics = [
+        { 
+            id: 'oeeChart', 
+            key: 'OEE',
+            label: 'OEE',
+            color: '#4e73df' 
+        },
+        { 
+            id: 'availabilityChart', 
+            key: 'Availability',
+            label: 'Availability',
+            color: '#1cc88a'
+        },
+        { 
+            id: 'performanceChart', 
+            key: 'Performance',
+            label: 'Performance',
+            color: '#36b9cc'
+        },
+        { 
+            id: 'qualityChart', 
+            key: 'Quality',
+            label: 'Quality',
+            color: '#f6c23e'
+        }
+    ];
+
+    console.log('Creating charts with data:', data);
+
+    metrics.forEach(metric => {
+        const value = data[metric.key] || 0;
+        console.log(`Creating ${metric.label} chart with value:`, value);
+        createGaugeChart(
+            metric.id,
+            metric.label,
+            value,
+            metric.color
+        );
+    });
+}
+
+function createGaugeChart(canvasId, label, value, color) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) {
+        console.error(`Canvas element not found: ${canvasId}`);
+        return;
+    }
+
+    if (charts[canvasId]) {
+        charts[canvasId].destroy();
+    }
+
+    // รับค่าและแปลงเป็นตัวเลข
+    const numericValue = parseFloat(value);
+
+    // สร้างกราฟใหม่
+    const newChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: [`${label} (${numericValue.toFixed(1)}%)`], // เพิ่ม % ในโค้ด
+            datasets: [{
+                data: [numericValue, 100 - numericValue],
+                backgroundColor: [
+                    color,
+                    'rgba(0, 0, 0, 0.1)'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '75%',
+            plugins: {
+                legend: {
+                    display: true,  // เปลี่ยนเป็น true เพื่อแสดง label
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        generateLabels: function(chart) {
+                            const data = chart.data;
+                            return data.labels.map((label, i) => ({
+                                text: label,
+                                fillStyle: data.datasets[0].backgroundColor[i],
+                                hidden: false,
+                                index: i
+                            }));
+                        }
+                    }
+                },
+                tooltip: {
+                    enabled: false
+                },
+                title: {
+                    display: true,
+                    text: `${numericValue.toFixed(1)}%`,
+                    position: 'bottom',
+                    padding: {
+                        top: 10,
+                        bottom: 0
+                    },
+                    font: {
+                        size: 20,
+                        weight: 'bold'
+                    }
+                }
+            }
+        }
+    });
+
+    charts[canvasId] = newChart;
+}
+
+    function updateDisplay(data) {
+    try {
+        console.log('Updating display with data:', data);
+        
+        // ตรวจสอบว่ามีข้อมูลครบทุกค่าหรือไม่
+        const metrics = {
+            OEE: parseFloat(data.OEE || 0),
+            Availability: parseFloat(data.Availability || 0),
+            Performance: parseFloat(data.Performance || 0),
+            Quality: parseFloat(data.Quality || 0)
+        };
+
+        console.log('Processed metrics:', metrics);
+
+        // อัพเดตค่าตัวเลข
+        Object.entries(metrics).forEach(([metric, value]) => {
+            const elementId = `${metric.toLowerCase()}Value`;
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = `${value.toFixed(1)}%`;
+            } else {
+                console.warn(`Element not found: ${elementId}`);
+            }
+        });
+
+        // อัพเดตกราฟ
+        updateCharts(metrics);
+
+    } catch (error) {
+        console.error('Error updating display:', error);
+    }
+}
+
+    function updateMetricValue(elementId, value) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.textContent = `${parseFloat(value).toFixed(1)}%`;
+        } else {
+            console.warn(`Element with id ${elementId} not found`);
+        }
+    }
+
+    function setZeroValues() {
+        const zeroData = {
+            OEE: 0,
+            Availability: 0,
+            Performance: 0,
+            Quality: 0
+        };
+
+        ['oeeValue', 'availabilityValue', 'performanceValue', 'qualityValue'].forEach(id => {
+            updateMetricValue(id, 0);
+        });
+
+        updateCharts(zeroData);
+    }
+
+    function updateMachineTable(data) {
+    const tableBody = document.querySelector('#machinePerformanceTable tbody');
+    if (!tableBody) {
+        console.error('Table body element not found');
+        return;
+    }
+
+    tableBody.innerHTML = '';
+    console.log('Raw data for Availability calculation:', data.dailyMetrics);  // เพิ่มบรรทัดนี้
+
+    if (data && data.dailyMetrics && data.dailyMetrics.length > 0) {
+        data.dailyMetrics.forEach(metric => {
+            // แสดง raw data ในตาราง
+            console.log(`Machine ${metric.MachineCode} raw data:`, {
+                total_working_minutes: metric.total_working_minutes,
+                planned_downtime: metric.planned_downtime,
+                actual_downtime: metric.actual_downtime,
+                availability: metric.Availability
+            });
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${metric.MachineCode || '-'}</td>
+                <td>${Number(metric.OEE).toFixed(1)}%</td>
+                <td title="Working Minutes: ${metric.total_working_minutes}
+Planned Downtime: ${metric.planned_downtime}
+Actual Downtime: ${metric.actual_downtime}">${Number(metric.Availability).toFixed(1)}%</td>
+                <td>${Number(metric.Performance).toFixed(1)}%</td>
+                <td>${Number(metric.Quality).toFixed(1)}%</td>
+                <td>${metric.Downtime || 0} min</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    } else {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td colspan="6" class="text-center">No data available</td>
+        `;
+        tableBody.appendChild(row);
+    }
+}
+
+function showLoading() {
+    document.getElementById('loadingOverlay').classList.remove('d-none');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.add('d-none');
+}
+
+    // เพิ่ม event listener สำหรับ searchBtn เพียงครั้งเดียว
+    searchBtn.addEventListener('click', fetchOEEData);
+    
+    // Set default dates
+    setDefaultDates();
+    
+    // Initial load
+    fetchOEEData();
+});
+    </script>

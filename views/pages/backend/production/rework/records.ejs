@@ -1,0 +1,66 @@
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><%- heading %></h1>
+        <a href="/api/production/rework/form-record" class="btn btn-sm btn-primary">
+            <i class="fas fa-plus fa-sm text-white-50"></i> เพิ่มข้อมูลใหม่
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h6 class="m-0 font-weight-bold text-primary">รายการ Rework ทั้งหมด</h6>
+                </div>
+                <div class="col-auto">
+                    <div class="d-flex align-items-center">
+                        <div class="mr-4">
+                            <div class="text-primary font-weight-bold" id="totalWeight">
+                                Rework ได้: 0 รายการ (0.00 kg)
+                            </div>
+                        </div>
+
+                        <button id="exportExcel" class="btn btn-success btn-sm mr-2">
+                            <i class="fas fa-file-excel"></i> Export Excel
+                        </button>
+                        <label class="mr-2 mb-0">เดือน: </label>
+                        <input type="month" id="filterDate" class="form-control-sm mr-2">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="reworkTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center">วันที่</th>
+                            <th class="text-center">MFG No.</th>
+                            <th class="text-center">Grade</th>
+                            <th class="text-center">Size</th>
+                            <th class="text-center">Weight</th>
+                            <th class="text-center">Coil No</th>
+                            <th class="text-center">Machine (สาเหตุ)</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+  
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="text-end fw-bold">รวม:</td>
+                            <td class="text-end fw-bold" id="totalWeightFoot">0.00</td>
+                            <td colspan="5"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/backend/js/exceljs.min.js"></script>
+<script src="/backend/js/forms/rework-records.js"></script>
+

@@ -1,0 +1,168 @@
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">OEE Department Dashboard</h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">OEE Analytics</a>
+    </div>
+
+    <!-- OEE Chart -->
+    <div class="container-fluid p-0">
+        <div class="card shadow mb-4">
+            <div class="card-header py-2">
+                <h6 class="m-0 font-weight-bold text-primary">Overall Equipment Effectiveness (OEE)</h6>
+            </div>
+            <div class="card-body py-2">
+                <div class="chart-controls">
+                    <div class="row align-items-center justify-content-end no-gutters">
+                        <div class="col-auto pr-2">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Department:</span>
+                                </div>
+                                <select id="departmentSelect" class="form-control">
+                                    <% departments.forEach(function(dept) { %>
+                                        <option value="<%= dept %>"><%= dept %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto pr-2">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Start:</span>
+                                </div>
+                                <input id="startDate" type="date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-auto pr-2">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">End:</span>
+                                </div>
+                                <input id="endDate" type="date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button id="searchBtn" class="btn btn-primary">Search</button>
+                                <button id="exportBtn" class="btn btn-secondary">Export</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <canvas id="oeeDonutChart" style="height: 50vh;"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>OEE</td>
+                                    <td id="oeeValue" class="text-right">0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Availability</td>
+                                    <td id="availabilityValue" class="text-right">0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Performance</td>
+                                    <td id="performanceValue" class="text-right">0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Quality</td>
+                                    <td id="qualityValue" class="text-right">0%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Machine Performance Table -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Machine Performance Details</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="machinePerformanceTable" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Machine</th>
+                            <th>OEE</th>
+                            <th>Availability</th>
+                            <th>Performance</th>
+                            <th>Quality</th>
+                            <th>Downtime</th>
+                        </tr>
+                    </thead>
+                    <tbody id="machinePerformanceTableBody">
+                        <!-- Machine performance data will be dynamically populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/backend/vendor/chart.js/Chart.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const departmentSelect = document.getElementById('departmentSelect');
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    const searchBtn = document.getElementById('searchBtn');
+
+    let oeeChart = null;
+
+    // Set default date range
+    const today = new Date();
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    startDateInput.valueAsDate = firstDayOfMonth;
+    endDateInput.valueAsDate = today;
+
+    // Search button click handler
+    searchBtn.addEventListener('click', async function() {
+    const department = departmentSelect.value;
+    const startDate = startDateInput.value;
+    const endDate = endDateInput.value;
+
+    try {
+        const url = `/production/oee/data?startDate=${startDate}&endDate=${endDate}&department=${department}`;
+        console.log('Fetching URL:', url);
+
+        const response = await fetch(url);
+        
+        // Log raw response
+        console.log('Raw Response Status:', response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error Response:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('API Response:', data);
+
+        // Rest of the code remains the same
+    } catch (error) {
+        console.error('Fetch Error:', error);
+        alert(`Failed to fetch OEE data: ${error.message}`);
+    }
+});
+
+    // Initial load
+    searchBtn.click();
+});
+</script>

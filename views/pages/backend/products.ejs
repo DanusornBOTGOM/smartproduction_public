@@ -1,0 +1,75 @@
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="mb-4 d-sm-flex align-items-center justify-content-between">
+        <h1 class="mb-0 text-gray-800 h3"><%- heading %></h1>
+
+        <div>
+            <a href="/backend/create_product" class="shadow-sm d-none d-sm-inline-block btn btn-sm btn-success"><i class="fas fa-plus fa-sm text-white-50"></i> Add new product</a>
+
+            <a href="/backend/exportcsv_products" class="shadow-sm d-none d-sm-inline-block btn btn-sm btn-info"><i class="fas fa-file-excel fa-sm text-white-50"></i> Export CSV</a>
+
+            <a href="/backend/exportpdf_products" class="shadow-sm d-none d-sm-inline-block btn btn-sm btn-danger"><i class="fas fa-file-pdf fa-sm text-white-50"></i> Export PDF</a>
+        </div>
+
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+        <div class="table-responsive">
+            <% 
+                if(data.length)
+                {
+            %>
+
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr class="text-white bg-primary">
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Created</th>
+                        <th>Updated</th>
+                        <th>Manage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     <%
+                     for(let row=0; row < data.length; row++)
+                     {
+                     %>
+                    <tr>
+                        <td><%=data[row].ProductID%></td>
+                        <td><img src="<%=data[row].ProductPicture%>" width="50"></td>
+                        <td><%=data[row].ProductName%></td>
+                        <td><%=data[row].category[0].CategoryName%></td>
+                        <td><%=data[row].UnitPrice%></td>
+                        <td><%=data[row].UnitStock%></td>
+                        <td><%=moment(data[row].CreatedDate).format('DD/MM/YYYY HH:mm:ss')%></td>
+                        <td><%=moment(data[row].ModifiedDate).format('DD/MM/YYYY HH:mm:ss')%></td>
+                        <td style="width: 200px">
+                            <a href="/backend/edit_product/<%=data[row]._id%>" class="btn btn-warning">Edit</a>
+                            <form id="delete_product_form" action="/backend/delete_product/<%=data[row]._id%>/resource?_method=DELETE" method="POST" style="display: inline-block;">
+                                <button class="btn btn-danger" type="submit" id="btn_delete_product">Delete </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <%
+                    }
+                    %>
+                </tbody>
+            </table>
+            <%
+                }else 
+                {
+            %>
+                <p>No Product found</p>
+            <% 
+                }
+            %>
+        </div>
+    </div>
+
+</div>

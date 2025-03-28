@@ -1,0 +1,112 @@
+<div class="container-fluid">
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800"><%- heading %></h1>
+      <a href="/backend/sales/sale_new_customers" class="btn btn-secondary ">
+          <i class="fas fa-arrow-left fa-sm text-white-40"></i> Back to List
+      </a>
+  </div>
+
+  <div class="card shadow mb-4">
+      <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Create New Special Customer</h6>
+      </div>
+      <div class="card-body">
+          <% if(messages.error) { %>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <%- messages.error %>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <% } %>
+          <% if(messages.success) { %>
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <%- messages.success %>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <% } %>
+          <form action="/backend/sales/sale_new_customers" method="POST">
+              <div class="form-group row">
+                  <label for="CompanyName" class="col-md-3 col-form-label font-weight-bold">Company Name:</label>
+                  <div class="col-md-9">
+                      <input type="text" class="form-control" name="CompanyName" required>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="ContactName" class="col-md-3 col-form-label font-weight-bold">Contact Name:</label>
+                  <div class="col-md-9">
+                      <input type="text" class="form-control" name="ContactName" required>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="ContactPhone" class="col-md-3 col-form-label font-weight-bold">Mobile Phone:</label>
+                  <div class="col-md-9">
+                      <input type="tel" class="form-control" name="ContactPhone" id="ContactPhone" required>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="CategoryMarket" class="col-md-3 col-form-label font-weight-bold">Market Segment:</label>
+                  <div class="col-md-9">
+                      <select name="CategoryMarket" id="CategoryMarket" class="form-control" required>
+                          <option value="">Select Market Segment</option>
+                          <% marketSegments.forEach(function(segment) { %>
+                              <option value="<%= segment.SegmentId %>"><%= segment.SegmentName %></option>
+                          <% }); %>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="MainProduct" class="col-md-3 col-form-label font-weight-bold">Main Product:</label>
+                  <div class="col-md-9">
+                      <input type="text" class="form-control" name="MainProduct">
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="Inquiry" class="col-md-3 col-form-label font-weight-bold">Inquiry:</label>
+                  <div class="col-md-9">
+                      <textarea class="form-control" name="Inquiry" rows="2"></textarea>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="Application" class="col-md-3 col-form-label font-weight-bold">Application:</label>
+                  <div class="col-md-9">
+                      <textarea class="form-control" name="Application" rows="1"></textarea>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="Detail" class="col-md-3 col-form-label font-weight-bold">Detail:</label>
+                  <div class="col-md-9">
+                      <textarea class="form-control" name="Detail" rows="6"></textarea>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="Remark" class="col-md-3 col-form-label font-weight-bold">Remark:</label>
+                  <div class="col-md-9">
+                      <textarea class="form-control" name="Remark" rows="3"></textarea>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <label for="SaleName" class="col-md-3 col-form-label font-weight-bold">Sale Name:</label>
+                  <div class="col-md-9">
+                      <select name="SaleName" id="SaleName" class="form-control" required>
+                          <option value="">Select Sales Representative</option>
+                          <% salesReps.forEach(function(rep) { %>
+                              <option value="<%= rep.SalesRepId %>"><%= rep.FullName %></option>
+                          <% }); %>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <div class="col-md-9 offset-md-3">
+                      <button type="submit" class="btn btn-primary btn-lg">
+                          <i class="fas fa-save fa-sm text-white-50 mr-2"></i> Submit
+                      </button>
+                  </div>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
+

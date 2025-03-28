@@ -1,0 +1,88 @@
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><%- heading %></h1>
+        <a href="/production/annealing/form" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-clipboard-list fa-sm text-white-50"></i> 
+            Annealing Form
+        </a>
+    </div>
+
+    <!-- Bar Chart -->
+    <div class="row">
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">%Production On Plan (Annealing)</h6>
+                </div>
+                <div class="chart-controls mb-3">
+                    <div class="date-inputs">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Start:</span>
+                            </div>
+                            <input id="start" type="date" class="form-control">
+                        </div>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">End:</span>
+                            </div>
+                            <input id="end" type="date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button id="filterButton" class="btn btn-primary">Filter</button>
+                        <button id="toggleViewButton" class="btn btn-secondary">Toggle View</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height: 80vh; width: 100%;">
+                        <canvas id="productionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <button id="exportExcelButton" class="btn btn-primary">Export to Excel</button>
+        <button id="exportPDFButton">Export to PDF</button>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">รายละเอียดการผลิต</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-row align-items-center mb-3">
+                    <div class="col-auto">
+                        <input type="date" id="detailDateInput" class="form-control">
+                    </div>
+                    <div class="col-auto">
+                        <select id="machineSelect" class="form-control">
+
+                        </select>
+                    </div>
+
+                    <div class="col-auto">
+                        <button id="detailFilterButton" class="btn btn-primary">แสดงข้อมูล</button>
+                    </div>
+                </div>
+
+                <div id="detailTableContainer" class="table-responsive"></div>
+
+            </div>
+        </div>
+    </div>
+
+
+<script src="vendor/chart.js/Chart.min.js"></script>
+
+<script type="module" src="js/table/table-annealing.js"></script>
+<script src="js/exceljs.min.js"></script>
+<script src="js/jspdf.umd.min.js"></script>
+<script src="js/jspdf.plugin.autotable.min.js"></script>
+
+<!-- Chart-bar-drawing %POP -->
+<script src="js/chart/chart-bar-annealing.js"></script>
+
+

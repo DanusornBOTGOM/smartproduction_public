@@ -1,0 +1,50 @@
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><%- heading %></h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Export to Excel</a>
+    </div>
+
+    <!-- Bar Chart -->
+    <div class="row">
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Plan vs Actual Production (Drawing)</h6>
+                </div>
+                <div class="chart-controls mb-3">
+                    <div class="date-inputs">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Start:</span>
+                            </div>
+                            <input id="start" type="date" class="form-control">
+                        </div>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">End:</span>
+                            </div>
+                            <input id="end" type="date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button id="filterButton" class="btn btn-primary">Filter</button>
+                        <button id="toggleViewButton" class="btn btn-secondary">Toggle View</button>
+                        <button id="resetButton" class="btn btn-secondary">Reset Date</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height: 80vh; width: 100%;">
+                        <canvas id="productionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script src="vendor/chart.js/Chart.min.js"></script>
+<script src="js/chart/chart-bar-plan-actual-Drawing.js"></script>

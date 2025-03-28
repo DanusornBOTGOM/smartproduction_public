@@ -1,0 +1,198 @@
+<div class="container-fluid">
+    <div class="mb-4 d-sm-flex align-items-center justify-content-between">
+        <h1 class="mb-0 text-gray-800 h3"><%- heading %></h1>
+
+        <div class="d-flex align-items-center">
+            <input type="text" id="companySearch" class="form-control mr-2" placeholder="Search Company..." style="width: auto;">
+            <input type="text" id="applicationSearch" class="form-control mr-2" placeholder="Search Application..." style="width: auto;">
+
+
+            <select id="salesNameFilter" class="form-control mr-2" style="width: auto;">
+                <option value="">All Sales</option>
+                <% 
+                let salesReps = data.reduce((acc, item) => {
+                    if (item.SalesRepId && !acc.some(x => x.id === item.SalesRepId)) {
+                        acc.push({
+                            id: item.SalesRepId,
+                            name: item.SalesRepName
+                        });
+                    }
+                    return acc;
+                }, []);
+                
+                salesReps.forEach(function(rep) { %>
+                    <option value="<%= rep.id %>"><%= rep.name %></option>
+                <% }); %>
+            </select>
+            <select id="marketSegmentFilter" class="form-control mr-2" style="width: auto;">
+                <option value="">All Market Segments</option>
+                <option value="Automotive">Automotive</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Medical">Medical</option>
+                <option value="Aerospace">Aerospace</option>
+                <option value="Trading">Trading</option>
+                <option value="Other">Other</option>
+            </select>
+            <a href="/backend/sales/create_sale_new_customers" class="shadow-sm d-none d-sm-inline-block btn btn-sm btn-success">
+                <i class="fas fa-plus fa-sm text-white-50"></i> Add new Customers
+            </a>
+        </div>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+        <div class="table-responsive">
+            <% if(data.length) { %>
+            <table id="saleNewCustomersTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr class="text-white bg-primary">
+                        <th>Created/Updated</th>
+                        <th>Company Name</th>
+                        <th>Contact Name</th>
+                        <th>Mobile</th>
+                        <th>Market Segment</th>
+                        <th>Main Product</th>
+                        <th>Inquiry</th>
+                        <th>Application</th>
+                        <th>Details</th>
+                        <th>Remark</th>
+                        <th>Sales Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(let row = 0; row < data.length; row++) { %>
+                    <tr>
+                        <td>
+                            Created: <%= moment.utc(data[row].CreatedAt).format('DD/MM/YYYY HH:mm') %><br>
+                            <% if(data[row].UpdatedAt && data[row].UpdatedAt !== data[row].CreatedAt) { %>
+                                Updated: <%= moment.utc(data[row].UpdatedAt).format('DD/MM/YYYY HH:mm') %>
+                            <% } %>
+                        </td>
+                        <td><%= data[row].CompanyName %></td>
+                        <td><%= data[row].ContactName %></td>
+                        <td class="nowrap-cell"><%= data[row].ContactPhone %></td>
+                        <td><%= data[row].MarketSegment || 'Unknown' %></td>
+                        <td><%= data[row].MainProduct %></td>
+                        <td title="<%= data[row].Inquiry %>">
+                            <%= data[row].Inquiry.length > 40 ? data[row].Inquiry.substring(0, 40) + '...' : data[row].Inquiry %>
+                        </td>
+                        <td title="<%= data[row].Application %>">
+                            <%= data[row].Application.length > 50 ? data[row].Application.substring(0, 50) + '...' : data[row].Application %>
+                        </td>
+                        <td title="<%= data[row].Details %>">
+                            <%= data[row].Details.length > 50 ? data[row].Details.substring(0, 50) + '...' : data[row].Details %>
+                        </td>
+                        <td title="<%= data[row].Remark %>">
+                            <%= data[row].Remark.length > 50 ? data[row].Remark.substring(0, 50) + '...' : data[row].Remark %>
+                        </td>
+                        <td data-sales-id="<%= data[row].SalesRepId %>"><%= data[row].SalesRepName %></td>
+                        <td>
+    <a href="/backend/sales/view_sale_customer/<%= data[row].SpecialCustomerId %>" class="btn btn-primary btn-sm">
+        View/Edit
+    </a>
+    <button onclick="deleteCustomer('<%= data[row].SpecialCustomerId %>')" class="btn btn-danger btn-sm">
+    Delete
+</button>
+</td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+            <% } else { %>
+                <p>No customers found</p>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<script>
+async function deleteCustomer(id) {
+    if (!confirm('คุณแน่ใจที่จะลบข้อมูลนี้หรือไม่?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/backend/sales/delete_sale_customer/${id}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            window.location.reload();
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        console.error('Delete error:', error);
+        alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+    }
+}
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const salesNameFilter = document.getElementById('salesNameFilter');
+    const marketSegmentFilter = document.getElementById('marketSegmentFilter');
+    const companySearch = document.getElementById('companySearch');
+    const applicationSearch = document.getElementById('applicationSearch');
+    const table = document.getElementById('saleNewCustomersTable');
+
+    function filterTable() {
+        const selectedSalesId = salesNameFilter.value;
+        const selectedSegment = marketSegmentFilter.value;
+        const companySearchValue = companySearch.value.toLowerCase();
+        const applicationSearchValue = applicationSearch.value.toLowerCase();
+        const rows = table.getElementsByTagName('tbody')[0].rows;
+
+        console.log('Selected Sales ID:', selectedSalesId);
+        console.log('Selected Segment:', selectedSegment);
+        console.log('Company Search Value:', companySearchValue);
+        console.log('Application Search Value:', applicationSearchValue);
+
+        for (let row of rows) {
+            const salesNameCell = row.cells[10];
+            const marketSegmentCell = row.cells[4];
+            const companyNameCell = row.cells[1];
+            const applicationCell = row.cells[7];
+            
+            const salesId = salesNameCell.getAttribute('data-sales-id');
+            const segmentValue = marketSegmentCell.textContent.trim();
+            const companyName = companyNameCell.textContent.toLowerCase();
+            const application = applicationCell.textContent.toLowerCase();
+
+            console.log('Row Sales ID:', salesId);
+            console.log('Row Sales Cell:', salesNameCell.textContent);
+            console.log('Row Segment:', segmentValue);
+            console.log('Row Company:', companyName);
+            console.log('Row Application:', application);
+
+            const salesMatch = selectedSalesId === '' || String(salesId) === String(selectedSalesId);
+            const segmentMatch = selectedSegment === '' || segmentValue === selectedSegment;
+            const companyMatch = companyName.includes(companySearchValue);
+            const applicationMatch = application.includes(applicationSearchValue);
+
+            console.log('Sales Match:', salesMatch);
+            console.log('Segment Match:', segmentMatch);
+            console.log('Company Match:', companyMatch);
+            console.log('Application Match:', applicationMatch);
+
+            if (salesMatch && segmentMatch && companyMatch && applicationMatch) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    }
+
+    // เพิ่ม event listeners สำหรับทุก filters
+    salesNameFilter.addEventListener('change', filterTable);
+    marketSegmentFilter.addEventListener('change', filterTable);
+    companySearch.addEventListener('input', filterTable);
+    applicationSearch.addEventListener('input', filterTable);
+
+    // เรียกใช้ฟังก์ชันกรองครั้งแรก
+    filterTable();
+
+    // เพิ่ม log เพื่อตรวจสอบว่า script ทำงาน
+    console.log('Filter script loaded');
+});
+</script>

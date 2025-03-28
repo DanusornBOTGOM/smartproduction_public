@@ -1,0 +1,280 @@
+<div class="container-fluid">
+    <h1 class="mb-4 h3 mb-0 text-gray-800"><%- heading %></h1>
+
+    <!-- Market Segments Section -->
+    <h3 class="mb-4 font-weight-bold">Market Segments Management</h3>
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">เพิ่ม Segment ใหม่</h4>
+            </div>
+            <div class="card-body">
+                <form action="/backend/sales/add_market_segment" method="POST">
+                    <div class="form-group">
+                        <label for="segmentName">Segment Name:</label>
+                        <input type="text" class="form-control" id="segmentName" name="segmentName" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Segment</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Market Segments ปัจจุบันที่มี</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Segment Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% marketSegments.forEach(function(segment) { %>
+                            <tr>
+                                <td><%= segment.SegmentId %></td>
+                                <td><%= segment.SegmentName %></td>
+                                <td>
+                                    <button onclick="AdminSettings.deleteSegment('<%= segment.SegmentId %>')"
+                                        class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Representatives Section -->
+    <h3 class="mb-4 font-weight-bold">Sales Management</h3>
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">เพิ่มรายชื่อ Sales-SpecialCustomers ใหม่</h4>
+            </div>
+            <div class="card-body">
+                <form action="/backend/sales/add_sales_rep" method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="firstName">First Name:</label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="lastName">Last Name:</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="phone">Phone:</label>
+                                <input type="tel" class="form-control" id="phone" name="phone">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Sales Representative</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">รายชื่อ Sales-SpecialCustomers ปัจจุบันที่มี</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% salesReps.forEach(function(rep) { %>
+                            <tr>
+                                <td><%= rep.SalesRepId %></td>
+                                <td><%= rep.FirstName + ' ' + rep.LastName %></td>
+                                <td><%= rep.Email %></td>
+                                <td><%= rep.Phone %></td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                        onclick="AdminSettings.deleteSalesRep('<%= rep.SalesRepId %>')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="mb-4 font-weight-bold">User Management (จัดการ)</h3>
+        <div class="container-fluid">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h4 class="m-0 font-weight-bold text-primary">เพิ่ม User ใหม่</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/backend/sales/add_user" method="POST">
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Role:</label>
+                            <select class="form-control" id="role" name="role" required>
+                                <option value="sales">Sales</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add User</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h4 class="m-0 font-weight-bold text-primary">รายชื่อ Users ที่ล็อกอินเข้าเว็บได้</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% users.forEach(function(user) { %>
+                                <tr>
+                                    <td><%= user.ID %></td>
+                                    <td><%= user.Username %></td>
+                                    <td><%= user.Role %></td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                            onclick="AdminSettings.deleteUser('<%= user.ID %>')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Permissions Management Section -->
+    <h3 class="mb-4 font-weight-bold">Permissions Management</h3>
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">User Permissions</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Sales Permissions</th>
+                                <th>Production Permissions</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.forEach(function(user) { %>
+                            <tr>
+                                <td><%= user.Username %></td>
+                                <td><%= user.Role %></td>
+                                <td>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" data-user-id="<%= user.ID %>"
+                                            data-module="sales" data-action="view"
+                                            <%= user.permissions?.sales?.view ? 'checked' : '' %>>
+                                        <label class="form-check-label">View</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" data-user-id="<%= user.ID %>"
+                                            data-module="sales" data-action="edit"
+                                            <%= user.permissions?.sales?.edit ? 'checked' : '' %>>
+                                        <label class="form-check-label">Edit</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" data-user-id="<%= user.ID %>"
+                                            data-module="sales" data-action="delete"
+                                            <%= user.permissions?.sales?.delete ? 'checked' : '' %>>
+                                        <label class="form-check-label">Delete</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" data-user-id="<%= user.ID %>"
+                                            data-module="production" data-action="view"
+                                            <%= user.permissions?.production?.view ? 'checked' : '' %>>
+                                        <label class="form-check-label">View</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" data-user-id="<%= user.ID %>"
+                                            data-module="production" data-action="edit"
+                                            <%= user.permissions?.production?.edit ? 'checked' : '' %>>
+                                        <label class="form-check-label">Edit</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" data-user-id="<%= user.ID %>"
+                                            data-module="production" data-action="delete"
+                                            <%= user.permissions?.production?.delete ? 'checked' : '' %>>
+                                        <label class="form-check-label">Delete</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm save-permissions"
+                                        data-user-id="<%= user.ID %>">
+                                        Save Changes
+                                    </button>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/backend/js/admin-settings.js"></script>

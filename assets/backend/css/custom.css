@@ -1,0 +1,1227 @@
+.sidebar-toggle {
+    position: fixed;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #0693e3;
+    color: white;
+    padding: 10px 5px 10px 0;
+    cursor: pointer;
+    z-index: 9998;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.toggle-icon {
+    font-size: 20px;
+    font-weight: bold;  
+    display: block;
+    transform: scaleX(0.5);
+}
+
+/* เพิ่ม hover effect */
+.sidebar-toggle:hover {
+    background-color: #000000;
+}
+
+.hidden-sidebar {
+    position: fixed;
+    left: -250px; /* ปรับตามความกว้างของ sidebar */
+    top: 0;
+    height: 100%;
+    width: 250px; /* ปรับตามความกว้างของ sidebar */
+    transition: left 0.3s ease-in-out;
+    z-index: 9999;
+}
+
+.hidden-sidebar.show {
+    left: 0;
+}
+
+/* เพิ่ม padding ให้กับ content เพื่อไม่ให้ทับกับ toggle button */
+.content-wrapper {
+    padding-left: 30px;
+}
+
+/* Filter start date-end date Chart bar*/
+.chart-controls {
+    background-color: #f8f9fc;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.date-inputs {
+    display: flex;
+    gap: 10px;
+}
+
+.input-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.button-group {
+    display: flex;
+    gap: 5px;
+    justify-content: flex-end;
+}
+
+.chart-bar {
+    position: relative;
+    height: 20rem;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .chart-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .date-inputs, .button-group {
+        width: 100%;
+    }
+
+    .button-group {
+        margin-top: 10px;
+        justify-content: stretch;
+    }
+
+    .button-group button {
+        flex: 1;
+    }
+
+    .chart-bar {
+        height: 15rem;
+    }
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+
+.chart-container {
+    position: relative;
+    height: 65vh;
+    width: 100%;
+}
+
+#productionChart {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 50vh;
+    }
+}
+
+/* TODO อันเก่า */
+
+.sidebar .nav-item .nav-link{
+    padding: 15px 20px !important;
+}
+
+.sidebar .nav-item .nav-link span{
+    font-size: 16px !important;
+}
+
+.sidebar-dark{
+    background-color: #0f172a; /* สีเมนูด้านข้าง */
+}
+
+.sidebar .nav-item .collapse .collapse-inner .collapse-item, .sidebar .nav-item .collapsing .collapse-inner .collapse-item{
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.sidebar .nav-item .collapse .collapse-inner .collapse-item:hover, .sidebar .nav-item .collapsing .collapse-inner .collapse-item:hover{
+    background-color: #17264b;
+}
+
+.sidebar .sidebar-heading{
+    font-size: 12px !important;
+}
+
+.sidebar .nav-item .collapse{
+    background-color: #0f172a;
+}
+
+form.user .form-control-user{
+    font-size: 1rem !important;
+}
+
+form.user .custom-checkbox.small label{
+    font-size: 1rem !important;
+}
+
+form.user .btn-user {
+    font-size: 1rem !important;
+}
+
+.small, small{
+    font-size: 100% !important;
+}
+
+/* TODO สำหรับ ตาราง Anealing */
+#detailTableContainer thead th {
+    background-color: #17a2b8 !important;
+    color: white !important;
+    text-align: center;
+}
+
+#detailTableContainer th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+#detailTableContainer td {
+    color: #000000;
+    text-align: center;
+}
+
+
+/* TODO ตาราง Drawing (ตารางรายเดือน month)*/
+#productionTable {
+    font-size: 0.9rem;
+    color: #000000; 
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* ที่เพิ่มมาใหม่ Sticky column */
+#productionTable thead tr:first-child th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background-color: #2596be;
+}
+
+#productionTable thead tr:nth-child(2) th {
+    position: sticky;
+    top: 25px; /* ปรับตามความสูงของแถวแรก */
+    z-index: 2;
+    background-color: #2596be;
+}
+
+#productionTable thead th:first-child {
+    left: 0;   
+    z-index: 4;
+}
+
+#productionTable thead tr:nth-child(2) th:first-child {
+    top: 0;
+}
+/* ที่เพิ่มมาใหม่ Sticky column */
+
+
+#productionTable thead th,
+#productionTable .machine-column {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    
+    background-color: #2596be; /* สีพื้นหลังเดียวกับ header ในคอลัม machine พวก DRA001 หรือต่างๆ */
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+#productionTable .machine-column {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+}
+
+#productionTable th,
+#productionTable td {
+    border: 1px solid #e3e6f0
+}
+
+#productionTable td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#productionTable tbody tr:nth-of-type(even) {
+    background-color: #f8f9fc;
+}
+
+#productionTable tbody tr:hover {
+    background-color: #eaecf4;
+}
+.date-filter {
+    display: flex;
+    align-items: center;
+}
+
+#monthYearPicker {
+    width: 200px;
+}
+
+.table-responsive {
+    max-height: 650px;
+    overflow-y: auto;
+}
+
+/* TODO ตารางแสดงผลผลิตประจำวัน (วันต่อวัน) อาจจะต้องเปลี่ยนชื่อตารางทีหลังดูสับสน*/
+
+.table-container {
+    max-height: 500px;
+    overflow: auto;
+    width: 100%;
+    position: relative;
+}
+
+/* กำหนดสีพื้นหลังและสีตัวอักษรสำหรับทุกคอลัมน์ใน header */
+#barChartTable thead th {
+    background-color: #17a2b8 !important; /* สีฟ้า */
+    color: white !important;
+}
+
+
+#barChartTable {
+    font-size: 0.9rem;
+    color: #000000;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#barChartTable th, #barChartTable td {
+    border: 1px solid #e3e6f0;
+    padding: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#barChartTable th {
+    background-color: #2596be;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+#barChartTable td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+
+
+#barChartTable th:nth-child(2), #barChartTable td:nth-child(2) { width: 100px; max-width: 105px; } /* Actual */
+#barChartTable th:nth-child(3), #barChartTable td:nth-child(3) { width: 60px; max-width: 75px; } /*  Plan */
+ #barChartTable th:nth-child(4), #barChartTable td:nth-child(4) { width: 96px; max-width: 100px; } /* DocNo */
+#barChartTable th:nth-child(5), #barChartTable td:nth-child(5) { width: 95px; max-width: 95px; } /* CustName */
+#barChartTable th:nth-child(6), #barChartTable td:nth-child(6) { width: 77px; max-width: 77px; } /* Remark */
+#barChartTable th:nth-child(7), #barChartTable td:nth-child(7) { width: 25%; min-width: 250px; } /* ปัญหา */
+#barChartTable th:nth-child(8), #barChartTable td:nth-child(8) { width: 80px; max-width: 80px; } /* เวลาที่สูญเสีย */
+#barChartTable th:nth-child(9), #barChartTable td:nth-child(9),
+#barChartTable th:nth-child(10), #barChartTable td:nth-child(10),
+#barChartTable th:nth-child(11), #barChartTable td:nth-child(11),
+#barChartTable th:nth-child(12), #barChartTable td:nth-child(12) {
+    width: 75px;
+    max-width: 75px;
+    min-width: 75px;
+}
+
+#barChartTable th:nth-child(13), #barChartTable td:nth-child(13) {
+    width: 100px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#barChartTable td:nth-child(5) { /* CustName */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#barChartTable td:nth-child(7) { /* ปัญหา */
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+#barChartTable {
+    white-space: normal;
+    word-wrap: break-word;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.problem-column {
+    vertical-align: top;
+}
+
+.problem-details {
+    max-height: none;
+    overflow-y: visible;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.problem-column {
+    width: auto;
+    max-width: none;
+    min-width: 250px;
+}
+
+/* สไตล์สำหรับแถวสลับสี */
+#barChartTable tbody tr:nth-child(even) {
+    background-color: #f0f0f0;
+}
+
+#barChartTable tbody tr:hover {
+    background-color: #ffffffe1;
+}
+
+/* สไตล์สำหรับปุ่ม */
+#barChartTable button {
+    padding: 2px 5px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    width: 100%;  /* ให้ปุ่มเต็มความกว้างของ cell */
+}
+
+/* ปรับแต่ง scrollbar */
+.table-container::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.machine-separator {
+    height: 2px;
+    background-color: #ddd;
+}
+
+/* ทำให้คอลัมน์ Action และ Details อยู่คงที่ */
+#barChartTable th:nth-last-child(1),
+#barChartTable td:nth-last-child(1),
+#barChartTable th:nth-last-child(2),
+#barChartTable td:nth-last-child(2) {
+    position: sticky;
+    z-index: 2;
+    background-color: inherit; /* ให้สีพื้นหลังเหมือนกับ cell อื่นๆ */
+}
+
+#barChartTable th:nth-last-child(2),
+#barChartTable td:nth-last-child(2) {
+    right: 80px; /* ปรับตามความกว้างของคอลัมน์ Details */
+}
+
+#barChartTable th:nth-last-child(1),
+#barChartTable td:nth-last-child(1) {
+    right: 0;
+}
+
+/* ให้ header ของคอลัมน์ที่อยู่คงที่มี z-index สูงกว่าเพื่อให้อยู่ด้านบนเสมอ */
+#barChartTable th:nth-last-child(1),
+#barChartTable th:nth-last-child(2) {
+    z-index: 11;
+}
+
+#barChartTable th:nth-last-child(2),
+#barChartTable td:nth-last-child(2) {
+    box-shadow: -2px 0 5px -2px rgba(0,0,0,0.1);
+}
+
+#barChartTable th:nth-last-child(1),
+#barChartTable td:nth-last-child(1) {
+    box-shadow: -2px 0 5px -2px rgba(0,0,0,0.1);
+}
+
+#barChartTable th:nth-last-child(2),
+#barChartTable td:nth-last-child(2),
+#barChartTable th:nth-last-child(1),
+#barChartTable td:nth-last-child(1) {
+    width: 80px;  /* ปรับความกว้างตามที่เหมาะสม */
+    max-width: 80px;
+}
+
+/* รักษาสีพื้นหลังของคอลัมน์ที่อยู่คงที่ */
+#barChartTable tbody tr:nth-child(even) td:nth-last-child(1),
+#barChartTable tbody tr:nth-child(even) td:nth-last-child(2) {
+    background-color: #f0f0f0;
+}
+
+#barChartTable tbody tr:nth-child(odd) td:nth-last-child(1),
+#barChartTable tbody tr:nth-child(odd) td:nth-last-child(2) {
+    background-color: #ffffff;
+}
+
+#barChartTable tbody tr:hover td:nth-last-child(1),
+#barChartTable tbody tr:hover td:nth-last-child(2) {
+    background-color: #e6e6e6 !important;
+}
+
+#barChartTable button.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+#barChartTable button.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+#barChartTable button:hover {
+    opacity: 0.8;
+}
+
+/* สำหรับเครื่องจักร PRO */
+#barChartTable tr.pro-machine td:first-child {
+    min-width: 100px;
+    max-width: none;
+    width: auto;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+
+/* ปรับแต่งความกว้างของคอลัมน์แรกสำหรับเครื่องจักรอื่นๆ */
+#barChartTable th:first-child,
+#barChartTable td:first-child {
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ทำให้ตารางสามารถ scroll ได้ในแนวนอน */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ปรับแต่ง scrollbar ให้สวยงาม */
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* ให้ header ของตารางอยู่คงที่เมื่อ scroll */
+#barChartTable thead {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+/* ปรับแต่ง z-index ของคอลัมน์ที่อยู่คงที่ */
+#barChartTable th:nth-last-child(1),
+#barChartTable th:nth-last-child(2) {
+    z-index: 21;
+}
+
+.machine-separator {
+    height: 2px;
+    background-color: #ddd;
+}
+
+
+#tableFilterButton {
+    background-color: #2596be;
+}
+
+/* NG Table */
+#ngTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#ngTable th, #ngTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#ngTable .even-row {
+    background-color: #f2f2f2;
+}
+
+#ngTable .odd-row {
+    background-color: #ffffff;
+}
+
+#ngTable tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* ตาราง Repert ประจำสัปดาห์/เดือน */
+#reportTable {
+    font-size: 0.9rem;
+    color: #000000;
+}
+
+#reportTable th {
+    background-color: #2596be;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+#reportTable td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#reportTable td div {
+    margin-bottom: 5px;
+}
+
+#reportTable .issues-cell {
+    text-align: left;
+    padding: 5px;
+    white-space: pre-line;
+}
+
+.issues-cell {
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+.issue-item {
+    padding: 4px 0;
+    margin: 4px 0;
+    border-bottom: 1px solid #eee;
+    white-space: pre-line;
+}
+.issue-item:last-child {
+    border-bottom: none;
+}
+
+#reportTable .issue-item {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#reportTable .issue-item:not(:last-child) {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+
+.problem-details {
+    max-width: 300px;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow: visible;
+}
+
+.problem-content {
+    max-height: 3.6em; /* ประมาณ 3 บรรทัด (1.2em ต่อบรรทัด) */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    line-height: 1.2em;
+}
+
+.problem-item {
+    margin-bottom: 5px;
+}
+
+.problem-description {
+    width: 60%;
+}
+
+.problem-downtime {
+    width: 50px;
+}
+
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
+
+.input-group-text {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+}
+.form-control {
+    font-size: 0.875rem;
+}
+
+@media (max-width: 767.98px) {
+    .date-inputs, .button-group {
+        margin-top: 10px;
+    }
+    
+    .button-group {
+        justify-content: flex-start;
+    }
+}
+
+.chart-controls .row {
+    margin-right: -5px;
+    margin-left: -5px;
+}
+.chart-controls .col-md-3,
+.chart-controls .col-md-auto {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: #2596be;
+    z-index: 10;
+}
+
+/* สำหรับ weekly-report-bar2 */
+#reportTable tr.low-pop {
+    background-color: #ffcccc; /* สีแดงอ่อน */
+  }
+
+
+/* แผนก CGM */
+/* CSS เฉพาะสำหรับตาราง CGM */
+.cgm-table {
+    width: max-content;
+    min-width: 100%;
+}
+
+.cgm-table th,
+.cgm-table td {
+    min-width: 100px;
+    padding: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* กำหนดความกว้างเฉพาะแต่ละคอลัมน์ */
+.cgm-table th:nth-child(1), .cgm-table td:nth-child(1) { min-width: 80px; }  /* Machine */
+.cgm-table th:nth-child(2), .cgm-table td:nth-child(2) { min-width: 80px; }  /* Actual */
+.cgm-table th:nth-child(3), .cgm-table td:nth-child(3) { min-width: 80px; }  /* Plan */
+.cgm-table th:nth-child(4), .cgm-table td:nth-child(4) { min-width: 180px; } /* MFG.No */
+.cgm-table th:nth-child(5), .cgm-table td:nth-child(5) { min-width: 150px; } /* ลูกค้า */
+.cgm-table th:nth-child(6), .cgm-table td:nth-child(6) { min-width: 100px; } /* Remark */
+.cgm-table th:nth-child(7), .cgm-table td:nth-child(7) { min-width: 200px; } /* ปัญหาที่เกิด */
+.cgm-table th:nth-child(8), .cgm-table td:nth-child(8) { min-width: 100px; } /* เวลาสูญเสีย */
+.cgm-table th:nth-child(9), .cgm-table td:nth-child(9) { min-width: 80px; }  /* ยาว */
+.cgm-table th:nth-child(10), .cgm-table td:nth-child(10) { min-width: 80px; } /* Grade */
+.cgm-table th:nth-child(11), .cgm-table td:nth-child(11) { min-width: 80px; } /* SizeIn */
+.cgm-table th:nth-child(12), .cgm-table td:nth-child(12) { min-width: 80px; } /* SizeOut */
+.cgm-table th:nth-child(13), .cgm-table td:nth-child(13) { min-width: 100px; } /* Action */
+.cgm-table th:nth-child(14), .cgm-table td:nth-child(14) { min-width: 100px; } /* Details */
+
+.cgm-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #17a2b8;
+}
+
+.cgm-table th {
+    position: sticky;
+    top: 0;
+    background-color: #17a2b8;
+    color: white;
+}
+
+.cgm-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.cgm-table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.cgm-table tbody tr:hover {
+    background-color: #e6e6e6;
+}
+
+.cgm-table td {
+    max-width: 200px;
+}
+
+.cgm-table td:hover {
+    white-space: normal;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
+}
+
+/* สไตล์สำหรับ container ของตาราง CGM */
+.cgm-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cgm-table th,
+.cgm-table td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ddd;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cgm-table thead {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.cgm-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.cgm-table tbody tr:hover {
+    background-color: #ddd;
+}
+
+/* สไตล์สำหรับ container ของตาราง CGM */
+.cgm-table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 15px;
+}
+
+/* Scrollbar styles */
+.cgm-table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.cgm-table-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.cgm-table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Styles for partial production and summary rows */
+.cgm-table .partial-production {
+    position: relative;
+    background-color: #fff3cd;
+}
+
+.cgm-table .partial-production::after {
+    content: "🔔ผลิตหลายเครื่อง";
+    font-size: 0.7em;
+    color: #856404;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #fff3cd;
+    padding: 2px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.cgm-table .summary-row {
+    font-weight: bold;
+    background-color: #e9ecef;
+}
+
+.cgm-table tr[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 3px;
+    z-index: 1000;
+}
+
+
+.oee-table {
+    border-collapse: collapse;
+    min-width: 100%;
+    white-space: nowrap;  /* ป้องกันข้อความขึ้นบรรทัดใหม่ */
+}
+
+.oee-table th, .oee-table td {
+    border: 1px solid #ddd;
+    padding: 4px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.oee-table thead th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.working-row {
+    background-color: #e6f3ff;
+}
+
+.av-row {
+    background-color: #e6ffe6;
+}
+
+.pe-row {
+    background-color: #fff3e6;
+}
+
+.q-row {
+    background-color: #ffe6e6;
+}
+
+.oee-row {
+    background-color: #e6e6ff;
+}
+
+/* ช่องที่ไม่มีข้อมูล */
+.oee-table td:empty {
+    background-color: #f9f9f9;
+}
+
+/* สำหรับแถวสรุป */
+.summary-row {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.summary-row td {
+    border-top: 2px solid #999;
+}
+
+
+/* OEE */
+.oee-table th, .oee-table td {
+    text-align: center;
+    vertical-align: middle;
+    color: black;
+}
+
+.oee-table thead th {
+    background-color: #f8f9fa;
+}
+
+.working-row td:not(:first-child) {
+    background-color: #e3f2fd;
+}
+
+.av-row td:not(:first-child) {
+    background-color: #f1f8e9;
+}
+
+.pe-row td:not(:first-child) {
+    background-color: #fff3e0;
+}
+
+.q-row td:not(:first-child) {
+    background-color: #ffebee;
+}
+
+.oee-row td:not(:first-child) {
+    background-color: #e8eaf6;
+}
+
+.summary-row td {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+/* Oee Cards */
+.card-title {
+    color: black;
+    font-weight: bold;
+}
+
+.card h2, .card-body {
+    color: black;
+}
+
+.form-group label {
+    color: black;
+}
+
+#startDate,
+#endDate {
+    color: black;
+}
+
+/* OEE สำหรับ select dropdown และ options */
+#machineCode,
+#machineCode option {
+    color: black;
+}
+
+
+/* /assets/backend/vendor/datatables/dataTables.bootstrap4.css */
+.table thead th {
+    background-color: #17a2b8 !important;
+    color: #fff !important;
+    font-weight: bold;
+ }
+ 
+ .table, 
+ .table tbody td { 
+    color: #000 !important; 
+ }
+
+ 
+ 
+/* TODO ตารางแสดงผลผลิตประจำวัน Daily (วันต่อวัน) ปุ่ม ModalPlanRow*/
+ /* Modal Styles */
+.modal {
+    display: flex !important;  /* ใช้ !important เพื่อให้แน่ใจว่า display: flex จะทำงาน */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+
+.modal-content {
+    margin: 20px auto;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+/* Button Styles */
+.btn-danger.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* Row Styles */
+.problem-edit-row {
+    display: flex;
+    margin-bottom: 10px;
+    align-items: center;
+    gap: 10px;
+}
+
+.problem-edit-row .btn-danger {
+    margin-left: auto;
+}
+
+.problem-edit-row.header-row {
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 5px;
+}
+
+.problem-edit-row.header-row div {
+    padding: 5px;
+}
+
+/* Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+}
+
+/* Form Buttons */
+#editProblemForm button {
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+/* Input Styles */
+.description-input {
+    flex: 2;
+    margin-right: 10px;
+    max-width: 160px;
+}
+
+.downtime-input {
+    width: 80px;
+    margin-right: 10px;
+}
+
+.notes-input {
+    flex: 3;
+    min-width: 600px;
+}
+
+
+/* TODO ตารางแสดงผลผลิตประจำวัน (วันต่อวัน) ปุ่มบันทึก แก้ไข */
+/* Problem Edit Row Styles */
+.problem-edit-row {
+    display: flex;
+    margin-bottom: 10px;
+    align-items: center;
+    gap: 10px;
+}
+
+.problem-edit-row .btn-danger {
+    margin-left: auto;
+}
+
+.problem-edit-row.header-row {
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 5px;
+}
+
+.problem-edit-row.header-row div {
+    padding: 5px;
+}
+
+/* Input Styles */
+.description-input {
+    flex: 2;
+    margin-right: 10px;
+    max-width: 160px;
+}
+
+.downtime-input {
+    width: 80px;
+    margin-right: 10px;
+}
+
+.notes-input {
+    flex: 3;
+    min-width: 600px;
+}
+
+/* Edit Modal Styles */
+#editModal {
+    display: flex;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 1200px;
+    position: relative;
+}
+
+/* Close Button Styles */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-danger.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* Edit Form Button Styles */
+#editProblemForm button {
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+

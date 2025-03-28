@@ -1,0 +1,77 @@
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><%- heading %></h1>
+        <a href="/api/production/rework/records" class="btn btn-sm btn-primary">
+            <i class="fas fa-list fa-sm text-white-50"></i> ดูรายการทั้งหมด
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">บันทึกข้อมูล Rework</h6>
+        </div>
+        <div class="card-body">
+            <form id="reworkForm">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="docNo" class="form-label">MFG No.</label>
+                        <input type="text" class="form-control" id="docNo" name="docNo" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="grade" class="form-label">Grade</label>
+                        <input type="text" class="form-control" id="grade" name="grade" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sizeIn" class="form-label">Size</label>
+                        <input type="text" class="form-control" id="sizeIn" name="sizeIn" required>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="weightIn" class="form-label">Weight</label>
+                        <input type="number" step="0.01" class="form-control" id="weightIn" name="weightIn" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="coilNo" class="form-label">Coil No</label>
+                        <input type="text" class="form-control" id="coilNo" name="coilNo">
+                    </div>
+
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="machineCode" class="form-label">Machine Code</label>
+                        <select class="form-control" id="machineCode" name="machineCode" required>
+                            <option value="">-- เลือก Machine Code --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sizeOut" class="form-label">Size Out</label>
+                        <input type="text" class="form-control" id="sizeOut" name="sizeOut">
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="reworkStatus" class="form-label">Status Rework</label>
+                        <select class="form-control" id="reworkStatus" name="reworkStatus" readonly>
+                            <option value="1">Rework</option>
+                        </select>
+                    </div>
+                    <div class="col-md-8">
+                        <label for="remark" class="form-label">หมายเหตุ</label>
+                        <input type="text" class="form-control" id="remark" name="remark" placeholder="ระบุหมายเหตุ (ถ้ามี)">
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="button" class="btn btn-secondary me-md-2" onclick="resetForm()">ล้างข้อมูล</button>
+                    <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/backend/js/forms/rework-form.js"></script>

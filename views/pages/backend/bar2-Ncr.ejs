@@ -1,0 +1,81 @@
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><%- heading %></h1>
+    </div>
+
+    <!-- <span id="wasteStartDisplay"></span> - <span id="wasteEndDisplay"></span> -->
+
+    <!-- Waste Production Chart -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Waste Production Chart</h6>
+        </div>
+        <div class="chart-controls mb-3">
+            <div class="date-inputs">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <!-- <span id="wasteStartDisplay" class="input-group-text">Start:</span> -->
+                        <span class="input-group-text">Start:</span>
+                    </div>
+                    <input id="wasteStart" type="date" class="form-control">
+                </div>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <!-- <span id="wasteEndDisplay" class="input-group-text">End:</span> -->
+                        <span class="input-group-text">End:</span>
+                    </div>
+                    <input id="wasteEnd" type="date" class="form-control">
+                </div>
+            <div class="button-group">
+                <button id="wasteFilterButton" class="btn btn-primary">Filter</button>
+                <button id="wasteResetButton" class="btn btn-secondary">Reset Date</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="waste-chart-container" style="position: relative; height: 80vh; width: 100%;">
+                <canvas id="wasteChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <button id="exportExcelButton" class="btn btn-primary">Export To Excel</button>
+    <div class="shadow">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">รายละเอียดของเสีย (NCR) BAR2</h6>
+        </div>
+        <div class="card-body">
+            <div class="form-row align-items-center mb-3">
+                <div class="col-auto">
+                    <select id="machineSelect" class="form-control">
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button id="detailFilterButton" class="btn btn-primary">แสดงข้อมูล</button>
+                </div>
+            </div>
+            <div id="currentMachineName" class="mb-3 font-weight-bold"></div>
+            
+            <!-- เพิ่ม Loading Indicator ตรงนี้ -->
+            <div id="loadingIndicator" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            
+            <div id="detailTableContainer" class="table-responsive">
+            </div>
+            
+            <!-- เพิ่ม Pagination ตรงนี้ -->
+            <nav aria-label="Page navigation">
+                <ul id="pagination" class="pagination justify-content-center mt-3"></ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script src="vendor/chart.js/Chart.min.js"></script>
+<script src="js/chart/ng/bar2-NG-chart.js"></script>
+<script src="js/table/ncr/table-bar2-DailyNcr.js"></script>

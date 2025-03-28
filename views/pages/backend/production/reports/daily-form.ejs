@@ -1,0 +1,258 @@
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><%- heading %></h1>
+        <a href="/api/production/reports/records" class="btn btn-sm btn-info">
+            <i class="fas fa-list fa-sm text-white-50"></i> 
+            ดูรายการงานบันทึกการผลิต
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h4 class="m-0 font-weight-bold text-primary">Production Report</h4>
+            <h6 class="m-0 font-weight-bold text-primary">บันทึกรายงานการผลิตบ่อต้ม Coating</h6>
+        </div>      
+
+        <div class="card-body">
+
+            <!-- แสดงข้อความบันทึกซ้ำ !!! -->
+            <div id="duplicateAlert" class="alert alert-warning" style="display: none;">
+                <strong><i class="fas fa-exclamation-triangle"></i> กำลังบันทึกซ้ำ!</strong> 
+                    กรุณาระบุสาเหตุการบันทึกซ้ำในช่อง "สาเหตุ" ด้านล่าง
+            </div>  
+
+            <form id="productionForm">
+
+                <!--Row 1: RSN Code -->
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm">
+                        <tr>
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label for="rsnCode" class="small">Code</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" 
+                                               id="rsnCode" 
+                                               class="form-control form-control-sm input-lg" 
+                                               placeholder="คลิกที่นี่แล้วสแกนบาร์โค้ด/กรอก" 
+                                               required 
+                                               autofocus
+                                               autocomplete="off" 
+                                               onpaste="return true">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-barcode"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm">
+
+                        <!-- Row 2 : Product Details-->
+                        <tr id="dataRow" style="display: none;">
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label for="docNo" class="small">MFG No.</label>
+                                    <input type="text" id="docNo" class="form-control form-control-sm input-sm" readonly>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label for="grade" class="small">Grade</label>
+                                    <input type="text" id="grade" class="form-control form-control-sm input-sm" readonly>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label for="sizeIn" class="small">Size In (mm.)</label>
+                                    <input type="text" id="sizeIn" class="form-control form-control-sm input-sm" readonly>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label for="machineCode" class="small">Machine</label>
+                                    <input type="text" id="machineCode" class="form-control form-control-sm input-md" readonly>
+                                </div>
+                            </td>
+
+                            <!-- hide -->
+                            <td style="display: none;">
+                                    <div class="form-group mb-1">
+                                        <label for="timeIn" class="small">เวลาเข้า</label>
+                                        <input type="datetime" id="timeIn" class="form-control form-control-sm datetime-input" readonly>
+                                    </div>
+                            </td>
+
+                            <td style="display: none;">
+                                <div class="form-group mb-1">
+                                    <label for="timeOut" class="small">เวลาออก</label>
+                                    <input type="datetime" id="timeOut" class="form-control form-control-sm datetime-input datetime-input" readonly>
+                                </div>
+                            </td>
+
+                            <!-- input -->
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label class="small">เวลาที่เริ่มต้ม</label>
+                                    <input type="datetime-local" class="form-control form-control-sm datetime-input" id="timeInManual" required>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label class="small">เวลาที่ต้มจบ</label>
+                                    <input type="datetime-local" class="form-control form-control-sm datetime-input" id="timeOutManual" required>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label for="coilNo" class="small">Coil No.</label>
+                                    <input type="text" id="coilNo" class="form-control form-control-sm input-xs" readonly>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label for="step" class="small">Step</label>
+                                    <input type="text" id="step" class="form-control form-control-sm input-xs" readonly>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label for="reelNumber" class="small">หมายเลขรีล</label>
+                                    <input type="text" id="reelNumber" class="form-control form-control-sm input-sm" readonly>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label for="printWeight" class="small">น้ำหนักออก (Kg.)</label>
+                                    <input type="text" id="printWeight" class="form-control form-control-sm input-md" readonly>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 3: Input Fields -->
+                        <tr>
+                            <!-- <td>
+                                <div class="form-group mb-1">
+                                    <label class="small">เวลาที่เริ่มต้ม</label>
+                                    <input type="datetime-local" class="form-control form-control-sm datetime-input" id="timeInManual">
+                                </div>
+                            </td>
+                            <td class="form-control mb-1">
+                                    <label class="small">เวลาที่ต้มจบ</label>
+                                    <input type="datetime-local" class="form-control form-control-sm datetime-input" id="timeOutManual">
+                            </td> -->
+
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label for="skinStatus" class="small">สภาพผิว</label>
+                                    <select class="form-control form-control-sm input-sm" id="skinStatus" required>
+                                        <option value="">เลือก...</option>
+                                        <option value="0">ผ่าน</option>
+                                        <option value="1">ไม่ผ่าน</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label for="materialType" class="small">ประเภท</label>
+                                    <select class="form-control form-control-sm input-sm" id="materialType" required>
+                                        <option value="">เลือก...</option>
+                                        <option value="0">วัตถุดิบ</option>
+                                        <option value="1">ลวดรีล</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td colspan="1"></td>
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label for="oven" class="small">ตู้อบที่</label>
+                                    <select class="form-control form-control-sm" id="oven">
+                                        <option value="">เลือกตู้อบ</option>
+                                        <option value="1">ตู้อบ 1</option>
+                                        <option value="2">ตู้อบ 2</option>
+                                        <option value="3">ตู้อบ 3</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label class="small">เวลาเข้าตู้อบ</label>
+                                    <input type="datetime-local" class="form-control form-control-sm datetime-input" id="ovenTimeIn">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group mb-1">
+                                    <label class="small">เวลาออกตู้อบ</label>
+                                    <input type="datetime-local" class="form-control form-control-sm datetime-input" id="ovenTimeOut">
+                                </div>
+                            </td>
+
+                            <!-- สาเหตุบันทึกซ้ำ -->
+                            <td>
+                                <div class="form-group mb-1" id="remarkRow" style="display: none;">
+                                    <label for="remark" class="small">สาเหตุ <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-sm" id="remark" name="remark" 
+                                        placeholder="ระบุสาเหตุ เช่น แช่งานซ้ำ">
+                                    <input type="hidden" id="isDuplicate" name="isDuplicate" value="false">
+                                </div>
+                            </td>
+
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary btn-sm">บันทึกข้อมูล</button>
+                    <button type="reset" class="btn btn-secondary btn-sm">รีเซ็ต</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .input-xs {
+        min-width: 60px !important;  /* สำหรับข้อมูลสั้นมาก เช่น Step */
+        max-width: 80px !important;
+    }
+    
+    .input-sm {
+        min-width: 80px !important;  /* สำหรับข้อมูลสั้น เช่น Grade */
+        max-width: 100px !important;
+    }
+    
+    .input-md {
+        min-width: 120px !important;  /* สำหรับข้อมูลปานกลาง */
+        max-width: 150px !important;
+    }
+    
+    .input-lg {
+        min-width: 150px !important;  /* สำหรับข้อมูลยาว */
+        max-width: 200px !important;
+    }
+    
+    .datetime-input {
+        min-width: 140px !important;
+        max-width: 160px !important;
+    }
+    
+    /* responsive */
+    @media (max-width: 768px) {
+        .input-xs, .input-sm, .input-md, .input-lg, .datetime-input {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+    }
+    </style>
+
+<script src="/backend/js/forms/daily-form.js"></script>

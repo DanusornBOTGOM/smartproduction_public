@@ -1,0 +1,143 @@
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><%- heading %></h1>
+        <a href="/backend/drawing-plan-actual" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">กราฟ Plan/Actual</a>
+    </div>
+
+    <!-- Bar Chart -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">%Production On Plan (Drawing)</h6>
+        </div>
+        <div class="chart-controls">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="date-inputs d-flex">
+                        <div class="input-group mr-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Start:</span>
+                            </div>
+                            <input id="start" type="date" class="form-control">
+                        </div>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">End:</span>
+                            </div>
+                            <input id="end" type="date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="button-group d-flex justify-content-end">
+                        <button id="filterButton" class="btn btn-primary btn-sm mr-2">Filter</button>
+                        <button id="toggleViewButton" class="btn btn-secondary btn-sm mr-2">Show Combined View</button>
+                        <button id="toggleChartViewButton" class="btn btn-info btn-sm">Switch to Plan/Actual View</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height: 80vh; width: 100%;">
+                        <canvas id="productionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card shadow mb-4">
+                <!-- <button onclick="exportToExcel()" class="btn btn-primary">Export to Excel</button> -->
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">ตารางแสดงข้อมูลผลผลิตประจำวัน</h6>
+                    <button onclick="exportToExcel()" class="btn btn-primary">Export to Excel</button>
+                    <!-- <a href="/backend/coilnosql" class="btn btn-primary ml-2"> แก้ไข CoilNo.</a> -->
+                    <div class="date-filter">
+                        <input type="date" id="selectedDate">
+                        <button id="dailyTableFilterButton" class="btn btn-primary ml-2">Filter</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="barChartTable" class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>MachineCode</th>
+                                    <th>Actual</th>
+                                    <th>Plan</th>
+                                    <th>MFG.No</th>
+                                    <th>ลูกค้า</th>
+                                    <th>Remark</th>
+                                    <th>ปัญหาที่เกิด</th>
+                                    <th>เวลาสูญเสีย(นาที)</th>
+                                    <th>Order</th>
+                                    <th>ยาว</th>
+                                    <th>SizeIn</th>
+                                    <th>SizeOut</th>
+                                    <th>Grade</th>
+                                    <th>Action</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h5 class="m-0 font-weight-bold text-primary">รายงานประจำสัปดาห์/รายเดือน</h2>
+                </div>
+                <div class="chart-controls mb-3">
+                    <div class="date-inputs">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="startDate">Start:</label>
+                                    <input type="date" id="startDate" class="form-control">
+                                    <label class="input-group-text" for="endDate">End:</label>
+                                    <input type="date" id="endDate" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button id="generateReport" class="btn btn-primary ml-2">สร้างรายงาน</button>
+                        <button id="saveAllPreventiveCorrections" class="btn btn-secondary">บันทึกข้อมูลทั้งหมด</button>
+                    </div>
+                </div>
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <table id="reportTable" class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>วันที่</th>
+                                    <th>MachineCode</th>
+                                    <th>%POP สะสม</th>
+                                    <th>Actual/Plan</th>
+                                    <th>ปัญหา</th>
+                                    <th>เวลาที่สูญเสีย</th>
+                                    <th>การแก้ไขป้องกัน</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> -->
+    </div>
+
+
+
+                <!-- Table ตารางแสดงข้อมูลผลผลิตประจำวัน (Drawing) **รอแก้ไขเป็นของแผนก Drawing-->
+                <script src="js/table/table-Dailyproduction-data-Drawing.js"></script>
+                <script src="js/exceljs.min.js"></script>
+
+                <!-- Page level plugins -->
+                <script src="vendor/chart.js/Chart.min.js"></script>
+
+                <!-- Chart-bar-drawing %POP -->
+                <script src="js/chart/chart-bar-drawing.js"></script>
+
+                <!-- <script src="js/report/weekly-report-drawing.js"></script> -->
