@@ -1,5 +1,5 @@
 const session = require('express-session');
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 const { connectSaleSql } = require('./sqldb_dbconfig');
 
 class CustomSessionStore extends session.Store {

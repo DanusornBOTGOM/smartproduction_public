@@ -47,6 +47,8 @@ async function fetchData() {
         const url = new URL(
             "http://192.168.1.214:5000/api/combinedDashboardProfile"
         );
+        // const url = await fetch('/api/combinedDashboardProfile');
+
         url.searchParams.append("date", formatDate(selectedDate));
         url.searchParams.append("machineCodePrefix", "PRO");
 

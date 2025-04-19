@@ -1,4 +1,4 @@
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 const {
     connectSaleSql
 } = require('../../../config/sqldb_dbconfig');
@@ -188,6 +188,75 @@ class SaleRepository {
     }
 
     async updateCustomer(customerId, data, transaction) {
+        // ดึงข้อมูล customer เดิมเพื่อหา ContactId และ CompanyId
+        const customerInfo = await transaction.request()
+            .input('CustomerId', sql.Int, customerId)
+            .query(`
+                SELECT ContactId, CompanyId
+                FROM [Sale].[dbo].[SpecialCustomers]
+                WHERE SpecialCustomerId = @CustomerId
+            `);
+        
+        if (customerInfo.recordset.length === 0) {
+            throw new Error('Customer not found');
+        }
+        
+        const contactId = customerInfo.recordset[0].ContactId;
+        const companyId = customerInfo.recordset[0].CompanyId;
+        
+        // อัปเดตข้อมูลชื่อบริษัทใน Companies table
+        if (data.CompanyName) {
+            await transaction.request()
+                .input('CompanyId', sql.Int, companyId)
+                .input('CompanyName', sql.NVarChar, data.CompanyName)
+                .query(`
+                    UPDATE [Sale].[dbo].[Companies]
+                    SET CompanyName = @CompanyName
+                    WHERE CompanyId = @CompanyId
+                `);
+        }
+        
+        // อัปเดตข้อมูลชื่อผู้ติดต่อและเบอร์โทรใน Contacts table
+        if (data.ContactName || data.ContactPhone) {
+            // แยกชื่อจริงและนามสกุล
+            let firstName = '', lastName = '';
+            if (data.ContactName) {
+                const nameParts = data.ContactName.split(' ');
+                firstName = nameParts[0] || '';
+                lastName = nameParts.slice(1).join(' ') || '';
+            }
+            
+            // สร้าง query สำหรับอัปเดต
+            let updateQuery = 'UPDATE [Sale].[dbo].[Contacts] SET ';
+            let updateParts = [];
+            
+            if (data.ContactName) {
+                updateParts.push('FirstName = @FirstName, LastName = @LastName');
+            }
+            
+            if (data.ContactPhone) {
+                updateParts.push('Phone = @Phone');
+            }
+            
+            updateQuery += updateParts.join(', ') + ' WHERE ContactId = @ContactId';
+            
+            // ทำการอัปเดต
+            const request = transaction.request()
+                .input('ContactId', sql.Int, contactId);
+                
+            if (data.ContactName) {
+                request.input('FirstName', sql.NVarChar, firstName);
+                request.input('LastName', sql.NVarChar, lastName);
+            }
+            
+            if (data.ContactPhone) {
+                request.input('Phone', sql.NVarChar, data.ContactPhone);
+            }
+            
+            await request.query(updateQuery);
+        }
+    
+
         // Update Special Customers
         await transaction.request()
             .input('CustomerId', sql.Int, customerId)

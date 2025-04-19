@@ -1225,3 +1225,141 @@ form.user .btn-user {
 }
 
 
+/* CSS สำหรับ calendar.js  */
+/* CSS สำหรับ loading spinner */
+body.loading:before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 9999;
+}
+
+body.loading:after {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+    margin-left: -25px;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 10000;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Custom styles for FullCalendar */
+
+
+.fc-day-today {
+    background-color: rgba(0, 123, 255, 0.1) !important;
+}
+
+.fc-header-toolbar {
+    margin-bottom: 1rem !important;
+}
+
+.fc-button-primary {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+.fc-button-primary:hover {
+    background-color: #0069d9 !important;
+    border-color: #0062cc !important;
+}
+
+.fc-button-active {
+    background-color: #0062cc !important;
+    border-color: #005cbf !important;
+}
+
+/* สไตล์สำหรับปฏิทิน */
+#calendar {
+    position: relative;
+    z-index: 1;
+    pointer-events: auto !important;
+}
+
+.fc, 
+.fc table, 
+.fc .fc-daygrid-body, 
+.fc .fc-scrollgrid, 
+.fc .fc-daygrid-day, 
+.fc .fc-col-header-cell {
+    pointer-events: auto !important;
+}
+
+.fc .fc-daygrid-day {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+.fc-daygrid-day-frame:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* สไตล์สำหรับ custom modal (เมื่อไม่มี Bootstrap) */
+#eventModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1050;
+    width: 500px;
+    max-width: 90%;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.5);
+}
+
+#eventModal .modal-header {
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#eventModal .modal-body {
+    padding: 15px;
+}
+
+#eventModal .modal-footer {
+    padding: 15px;
+    border-top: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-close {
+    background: transparent;
+    border: 0;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1040;
+    display: none;
+}

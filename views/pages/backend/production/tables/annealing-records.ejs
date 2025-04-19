@@ -5,13 +5,6 @@
             <i class="fas fa-plus fa-sm text-white-150"></i> เพิ่มข้อมูลใหม่
         </a>
     </div>
-    <!-- <button id="exportPDF" class="btn btn-danger btn-sm">
-        <i class="fas fa-file-pdf"></i> Export PDF
-    </button>
-    <button id="exportExcel" class="btn btn-success btn-sm">
-        <i class="fas fa-file"></i> Export Excel
-    </button> -->
-
 
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -20,25 +13,23 @@
                 <h6 class="m-0 font-weight-bold text-primary">รายงานการล้างลวดประจำวันและการตรวจสอบคุณภาพ</h6>
             </div>
             <div class="d-flex align-items-center">
-                <!-- เพิ่มส่วนแสดงผลรวมแต่ละกะ -->
+
                 <div class="mr-4">
                     <div class="text-primary font-weight-bold" id="morningShiftSummary">
-
+                        กะเช้า (08:00-19:59): 0 รายการ (0.00 kg)
                     </div>
                     <div class="text-info font-weight-bold" id="nightShiftSummary">
-
+                        กะดึก (20:00-07:59): 0 รายการ (0.00 kg)
                     </div>
                 </div>
         
-                <!-- ปุ่ม Export เดิม -->
-                <!-- <button id="exportPDF" class="btn btn-danger btn-sm mr-2">
-                    <i class="fas fa-file-pdf"></i> Export PDF
-                </button> -->
                 <button id="exportExcel" class="btn btn-success btn-sm mr-2">
                     <i class="fas fa-file"></i> Export Excel
                 </button>
+
                 <label class="mr-2 mb-0">เลือกวันที่: </label>
-                <input type="date" id="startDate" class="form-control-sm mr-2">
+                <input type="date" id="startDate" class="form-control-sm mr-2" value="<%= selectedDate %>">
+
             </div>
         </div>
         <div class="card-body">
@@ -49,7 +40,6 @@
                             <th>MFG No.</th>
                             <th>Grade</th>
                             <th>Size</th>
-
                             <th>CoilNo</th>
                             <th>Step</th>
                             <th>หมายเลขป้ายแทน</th>
@@ -114,22 +104,8 @@
                 </table>
             </div>
         </div>
-
-        
-        
     </div>
 </div>
 
-
-<!-- <script src="/backend/js/table/annealing-records.js"></script> -->
-<!-- <script src="/backend/vendor/jquery/jquery.min.js"></script> -->
-<!-- <script src="/backend/vendor/datatables/jquery.dataTables.min.js"></script> -->
-<!-- <script src="/backend/vendor/datatables/dataTables.bootstrap4.min.js"></script> -->
-
 <script src="/backend/js/exceljs.min.js"></script>
-<!-- <script src="/backend/js/jspdf.umd.min.js"></script>
-<script src="/backend/js/jspdf.plugin.autotable.min.js"></script> -->
-
-<!-- <script src="/backend/js/utils/dateUtils.js"></script> -->
 <script src="/backend/js/table/production/annealing-records.js"></script>
-

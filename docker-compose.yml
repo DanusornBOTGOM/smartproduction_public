@@ -1,47 +1,59 @@
-version: '3.8'
-
+version: "3"
 services:
-  app:
-    build:
-      context: .
-      target: runner
-    network_mode: "host"
-    restart: unless-stopped
+  smart-production:
+    build: .
+    # ports:
+    #   - "5000:5000" ## Run ปกติ
     environment:
       - NODE_ENV=production
-      - PORT=5000
-      - DOCKER_ENV=true
-      - SQLSERVER_HOST=localhost\\SQLEXPRESS
-      - SQLSERVER_PORT=1433
-      - SQLSERVER_USER=prodtusr
-      - SQLSERVER_PASSWORD=Pro1767*
-      - SQLSERVER_PROD_DB=Production_Analytics
-      - SQLSERVER_SALE_DB=Sale
-      - DB_POOL_MIN=1
-      - DB_POOL_MAX=2
-      - DB_IDLE_TIMEOUT=300000
-      - DB_ACQUIRE_TIMEOUT=30000
+      - DB_USER=prodtusr
+      - DB_PASSWORD=Pro1767*
+      - SESSION_SECRET=your-secure-session-secret
+      - HOST=0.0.0.0
+      - COOKIE_DOMAIN=localhost
+      - COOKIE_SECURE=false
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - app-network
     volumes:
-      - ./logs:/app/logs
-    healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+      - ./uploads:/usr/src/app/uploads
+      - ./sessions:/usr/src/app/sessions
 
-  postgres:
-    image: postgres:14-alpine
-    restart: unless-stopped
-    environment:
-      - POSTGRES_USER=yourusername
-      - POSTGRES_PASSWORD=yourpassword
-      - POSTGRES_DB=yourdb
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
+  web:
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
     ports:
-      - "5432:5432"
+      - "5050:5050" # กัน Port ชน
+    depends_on:
+      - smart-production
+    networks:
+      - app-network
+    volumes:
+      - ./logs/nginx:/var/log/nginx
+    restart: unless-stopped
 
-volumes:
-  postgres-data:
-  logs-data:
+networks:
+  app-network:
+    driver: bridge
+
+
+
+# # Old- OK
+# version: "3"
+# services:
+#   smart-production:
+#     build: .
+#     ports:
+#       - "5000:5000"
+#     environment:
+#       - NODE_ENV=production
+#       - DB_USER=prodtusr
+#       - DB_PASSWORD=Pro1767*
+#       - SESSION_SECRET=your-secure-session-secret
+#       - HOST=0.0.0.0
+#       - COOKIE_DOMAIN=localhost
+#       - COOKIE_SECURE=false
+#     extra_hosts:
+#       - "host.docker.internal:host-gateway"

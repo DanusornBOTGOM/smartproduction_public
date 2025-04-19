@@ -1,0 +1,451 @@
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><%- heading %></h1>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">ค้นหาข้อมูล</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="filterDate">เลือกวันที่:</label>
+                        <input type="date" id="filterDate" class="form-control">
+                    </div>
+                    <button id="searchButton" class="btn btn-primary mt-2">
+                        <i class="fas fa-search"></i> ค้นหา
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">สถิติการอนุมัติ</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card bg-warning text-white shadow">
+                                <div class="card-body">
+                                    รออนุมัติ
+                                    <div class="h4 mb-0 font-weight-bold" id="pendingCount">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-success text-white shadow">
+                                <div class="card-body">
+                                    อนุมัติแล้ว
+                                    <div class="h4 mb-0 font-weight-bold" id="approvedCount">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <ul class="nav nav-tabs card-header-tabs" id="approvalTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="pending-tab" data-toggle="tab" href="#pending" role="tab">รายการรออนุมัติ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="history-tab" data-toggle="tab" href="#history" role="tab">ประวัติการอนุมัติ</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content" id="approvalTabContent">
+                <div class="tab-pane fade show active" id="pending" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="pendingTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>MFG No.</th>
+                                    <th>Grade</th>
+                                    <th>Size</th>
+                                    <th>เวลาต้ม (นาที)</th>
+                                    <th>เวลาต้มเข้า</th>
+                                    <th>เวลาต้มออก</th>
+                                    <th>เวลาอบ (นาที)</th>
+                                    <th>เวลาอบเข้า</th>
+                                    <th>เวลาอบออก</th>
+                                    <th>Weight</th>
+                                    <th>ผู้รายงาน</th>
+                                    <th>วันที่สร้าง</th>
+                                    <th>การจัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- ข้อมูลจะถูกเพิ่มโดย JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="history" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="historyTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>MFG No.</th>
+                                    <th>Grade</th>
+                                    <th>Size</th>
+                                    <th>Weight</th>
+                                    <th>ผู้รายงาน</th>
+                                    <th>สถานะ</th>
+                                    <th>ผู้อนุมัติ</th>
+                                    <th>วันที่อนุมัติ</th>
+                                    <th>หมายเหตุ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- ข้อมูลจะถูกเพิ่มโดย JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="approvalModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">อนุมัติรายการ</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="approvalRecordId">
+                <div class="form-group">
+                    <label>MFG No.:</label>
+                    <p id="approvalDocNo" class="font-weight-bold"></p>
+                </div>
+                <div class="form-group">
+                    <label>การตัดสินใจ:</label>
+                    <select id="approvalStatus" class="form-control">
+                        <option value="1">อนุมัติ</option>
+                        <option value="2">ไม่อนุมัติ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="approvalComment">หมายเหตุ:</label>
+                    <textarea id="approvalComment" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">ยกเลิก</button>
+                <button type="button" id="saveApproval" class="btn btn-primary">บันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function calculateBoilingTime(TimeInManual, TimeOutManual) {
+        if (!TimeInManual || !TimeOutManual) return 0;
+    
+        const startTime = new Date(TimeInManual);
+        const endTime = new Date(TimeOutManual);
+        const diffMinutes = Math.round((endTime - startTime) / (1000 * 60));
+    
+        return diffMinutes > 0 ? diffMinutes : 0;
+    }
+    
+    function calculateBakingTime(TimeInForm, TimeOutForm) {
+        if (!TimeInForm || !TimeOutForm) return 0;
+    
+        const startTime = new Date(TimeInForm);
+        const endTime = new Date(TimeOutForm);
+        const diffMinutes = Math.round((endTime - startTime) / (1000 * 60));
+    
+        return diffMinutes > 0 ? diffMinutes : 0;
+    }
+    
+    function formatDateTime(dateStr) {
+        if (!dateStr) return '-';
+    
+        try {
+            const date = new Date(dateStr);
+            
+            if (isNaN(date.getTime())) {
+                return '-';
+            }
+            
+            return new Intl.DateTimeFormat('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+                timeZone: 'UTC'
+            }).format(date).replace(/(\d+)\/(\d+)\/(\d+)/, '$3/$1/$2').replace(/,/g, '');
+        } catch (error) {
+            return '-';
+        }
+    }
+    
+    function formatNumber(num) {
+        if (!num) return '0.00';
+        return parseFloat(num).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+    
+    function showModal(recordId, docNo) {
+    document.getElementById('approvalRecordId').value = recordId;
+    document.getElementById('approvalDocNo').textContent = docNo;
+    
+    const modal = document.getElementById('approvalModal');
+    modal.style.display = 'block';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+    
+    // โฟกัสที่ element แรกที่โต้ตอบได้ใน modal
+    const firstFocusable = modal.querySelector('select, textarea, button');
+    if (firstFocusable) {
+        firstFocusable.focus();
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById('approvalModal');
+    modal.style.display = 'none';
+}
+    
+    async function loadPendingData(date) {
+        try {
+            const response = await fetch(`/api/production/reports/pending-approvals?date=${date}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch pending data');
+            }
+            
+            const data = await response.json();
+            
+            // อัปเดตจำนวนรออนุมัติ
+            document.getElementById('pendingCount').textContent = data.length;
+            
+            const tbody = document.querySelector('#pendingTable tbody');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="13" class="text-center">ไม่พบข้อมูลที่รออนุมัติ</td></tr>`;
+                return;
+            }
+            
+            data.forEach(item => {
+                const boilingTime = calculateBoilingTime(item.TimeInManual, item.TimeOutManual);
+                const bakingTime = calculateBakingTime(item.TimeInForm, item.TimeOutForm);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.DocNo || '-'}</td>
+                    <td>${item.Grade || '-'}</td>
+                    <td>${item.Size || '-'}</td>
+                    <td>${boilingTime}</td>
+                    <td>${formatDateTime(item.TimeInManual)}</td>
+                    <td>${formatDateTime(item.TimeOutManual)}</td>
+                    <td>${bakingTime}</td>
+                    <td>${formatDateTime(item.TimeInForm)}</td>
+                    <td>${formatDateTime(item.TimeOutForm)}</td>
+                    <td>${formatNumber(item.PrintWeight) || '0'}</td>
+                    <td>${item.ReporterName || '-'}</td>
+                    <td>${formatDateTime(item.CreateDate)}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm approve-btn" data-id="${item.ID}" data-docno="${item.DocNo}">
+                            <i class="fas fa-check"></i> อนุมัติ
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            document.querySelectorAll('.approve-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const recordId = btn.getAttribute('data-id');
+                    const docNo = btn.getAttribute('data-docno');
+                    showModal(recordId, docNo);
+                });
+            });
+        } catch (error) {
+            console.error('Error loading pending data:', error);
+            alert('เกิดข้อผิดพลาดในการโหลดข้อมูล: ' + error.message);
+        }
+    }
+    
+    async function loadHistoryData(date) {
+        try {
+            const response = await fetch(`/api/production/reports/approval-history?date=${date}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch history data');
+            }
+            
+            const data = await response.json();
+            
+            // อัปเดตจำนวนอนุมัติแล้ว
+            const approvedCount = data.filter(item => item.ApprovalStatus === 1).length;
+            document.getElementById('approvedCount').textContent = approvedCount;
+            
+            const tbody = document.querySelector('#historyTable tbody');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center">ไม่พบประวัติการอนุมัติ</td></tr>`;
+                return;
+            }
+            
+            data.forEach(item => {
+                const statusText = item.ApprovalStatus === 1 ? 
+                    '<span class="badge badge-success">อนุมัติแล้ว</span>' : 
+                    '<span class="badge badge-danger">ไม่อนุมัติ</span>';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.DocNo || '-'}</td>
+                    <td>${item.Grade || '-'}</td>
+                    <td>${item.Size || '-'}</td>
+                    <td>${formatNumber(item.PrintWeight) || '0'}</td>
+                    <td>${item.ReporterName || '-'}</td>
+                    <td>${statusText}</td>
+                    <td>${item.ApproverName || '-'}</td>
+                    <td>${formatDateTime(item.ApprovalDate)}</td>
+                    <td>${item.ApprovalComment || '-'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error loading history data:', error);
+            alert('เกิดข้อผิดพลาดในการโหลดข้อมูล: ' + error.message);
+        }
+    }
+    
+    // เริ่มการทำงาน
+    document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM fully loaded');
+    
+    // // ซ่อน modal ตอนโหลดหน้า
+    // const approvalModal = document.getElementById('approvalModal');
+    // if (approvalModal) {
+    //     approvalModal.style.display = 'none';
+    // }
+        console.log('DOM fully loaded');
+        
+        const filterDate = document.getElementById('filterDate');
+        const searchButton = document.getElementById('searchButton');
+        const pendingTab = document.getElementById('pending-tab');
+        const historyTab = document.getElementById('history-tab');
+        const saveApproval = document.getElementById('saveApproval');
+        
+        // ตรวจสอบและลบ overlay
+        const modalBackdrops = document.querySelectorAll('.modal-backdrop');
+        modalBackdrops.forEach(backdrop => backdrop.remove());
+        
+        // ตั้งค่าวันที่ปัจจุบัน
+        const today = new Date();
+        filterDate.value = today.toISOString().split('T')[0];
+        
+        // โหลดข้อมูลครั้งแรก
+        await loadPendingData(filterDate.value);
+        
+        // Event Listeners
+        if (searchButton) {
+            searchButton.addEventListener('click', async () => {
+                const activeTab = document.querySelector('#approvalTabs .nav-link.active');
+                if (activeTab.id === 'pending-tab') {
+                    await loadPendingData(filterDate.value);
+                } else {
+                    await loadHistoryData(filterDate.value);
+                }
+            });
+        }
+        
+        if (pendingTab) {
+            pendingTab.addEventListener('click', async () => {
+                await loadPendingData(filterDate.value);
+            });
+        }
+        
+        if (historyTab) {
+            historyTab.addEventListener('click', async () => {
+                await loadHistoryData(filterDate.value);
+            });
+        }
+        
+        if (saveApproval) {
+            saveApproval.addEventListener('click', async () => {
+                const recordId = document.getElementById('approvalRecordId').value;
+                const status = document.getElementById('approvalStatus').value;
+                const comment = document.getElementById('approvalComment').value;
+                
+                try {
+                    const response = await fetch('/api/production/reports/approve', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            recordId,
+                            status,
+                            comment
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to save approval');
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        closeModal();
+                        alert('บันทึกการอนุมัติสำเร็จ');
+                        await loadPendingData(filterDate.value);
+                        await loadHistoryData(filterDate.value);
+                    } else {
+                        alert('เกิดข้อผิดพลาด: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error saving approval:', error);
+                    alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + error.message);
+                }
+            });
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // ปรับปรุงการคลิกนอก Modal
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('approvalModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });        
+    
+    });
+    </script>
+
+<style>
+    /* ทับ CSS เดิม */
+    .modal {
+        display: none !important; /* initial state */
+    }
+    .modal.show {
+        display: flex !important; /* when shown */
+    }
+    </style>

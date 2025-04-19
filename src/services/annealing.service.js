@@ -1,4 +1,4 @@
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 const { connectDestSql } = require('../../config/sqldb_dbconfig');
 
 class AnnealingService {
@@ -53,7 +53,7 @@ class AnnealingService {
                     CleanLiness, WireWound, Rust, Bend,
                     HeadPump, EntryStatus, PrintWeight,
                     PlateNo, CreateDate, TimeIn, PrintTime
-                FROM [Production_Analytics].[dbo].[Annealing_Form]
+                FROM [Production_Analytics].[dbo].[ProductionDailyLogs]
                 ORDER BY CreateDate DESC
             `);
         return result.recordset;
@@ -67,7 +67,7 @@ class AnnealingService {
                 .input('RSNCode', sql.NVarChar(50), formData.RSNCode)
                 .query(`
                     SELECT COUNT(*) as count
-                    FROM [Production_Analytics].[dbo].[Annealing_Form]
+                    FROM [Production_Analytics].[dbo].[ProductionDailyLogs]
                     WHERE RSNCode = @RSNCode    
                 `);
 
@@ -97,7 +97,7 @@ class AnnealingService {
                     .input('PrintWeight', sql.Float, formData.printWeight)
                     .input('PlateNo', sql.NVarChar(50), formData.PlateNo)
                     .query(`
-                        INSERT INTO [Production_Analytics].[dbo].[Annealing_Form]
+                        INSERT INTO [Production_Analytics].[dbo].[ProductionDailyLogs]
                             (DocNo, Grade, Size, WeightInput, CoilNo, CurrentStep, 
                              LabelNumber, PrintTime, TimeIn, WashingPound, 
                              CleanLiness, WireWound, Rust, Bend, HeadPump, 

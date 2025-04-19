@@ -1,6 +1,6 @@
 // Import Express
 const express = require('express')
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 
 // Import Moment เพื่อไว้จัดรูปแบบวันที่
 const moment = require('moment-timezone');

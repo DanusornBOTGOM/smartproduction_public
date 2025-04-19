@@ -1,4 +1,5 @@
 const ProductionDailyRepository = require("../data-access/production-daily.repository");
+const ApprovalRepository = require("../data-access/approval.repository");
 
 class ProductionDailyService {
     constructor() {
@@ -12,14 +13,40 @@ class ProductionDailyService {
             return record;
         } catch (error) {
             console.error('Error in ProductionService - getByRsnCode:', error);
-            throw error;          
+            throw error; 
         }
     }
 
     // บันทึกข้อมูลผลิต
-    async submitProductionData(productionData) {
+    // async submitProductionData(productionData) {
+    //     try {
+    //         const result = await this.repository.submitProductionData(productionData)
+    //         return result;
+    //     } catch (error) {
+    //         console.error('Error in ProductionService - submitProductionData:', error);
+    //         throw error;
+    //     }
+    // }
+
+    // บันทึกข้อมูลผลิต 2
+    async submitProductionData(productionData, user) {
         try {
-            const result = await this.repository.submitProductionData(productionData)
+            // ตรวจสอบว่ามีการ login
+            if (!user) {
+                throw new Error('กรุณาเข้าสู่ระบบก่อนบันทึกข้อมูล')
+            }
+
+            const result = await this.repository.submitProductionData(productionData);
+            
+            // บึกทึกรายงาน
+            const approvalRepository = new ApprovalRepository();
+            await approvalRepository.approveRecord(
+                result.recordId, // ID ของรายการที่เพิ่งบันทึก
+                user.ID, // ID ของผู้ใช้
+                0, // สถานะ 0 = รออนุมัติ
+                'รายงานโดย ' + user.Username
+            );
+            
             return result;
         } catch (error) {
             console.error('Error in ProductionService - submitProductionData:', error);
@@ -52,9 +79,9 @@ class ProductionDailyService {
         }
     }
 
-    async updateTime(id, timeInManual, timeOutManual) {
+    async updateTime(id, timeInManual, timeOutManual, timeInForm, timeOutForm) {
         try {
-            const result = await this.repository.updateTime(id, timeInManual, timeOutManual);
+            const result = await this.repository.updateTime(id, timeInManual, timeOutManual, timeInForm, timeOutForm);
             return result;
         } catch (error) {
             console.error('Error in service updateTime:', error);

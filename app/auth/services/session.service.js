@@ -1,4 +1,4 @@
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 const { connectSaleSql } = require('../../../config/sqldb_dbconfig');
 const EventEmitter = require('events');
 

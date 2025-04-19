@@ -1,4 +1,4 @@
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 const NodeCache = require('node-cache');
 const { 
     formatDateThai, 

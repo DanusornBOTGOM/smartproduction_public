@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 const moment = require('moment-timezone');
 const { connectSaleSql } = require('../config/sqldb_dbconfig');
 const { isAuthenticated, isSalesRole } = require('../src/middlewares/auth.middleware');
@@ -89,7 +89,7 @@ const { isAuthenticated, isSalesRole } = require('../src/middlewares/auth.middle
         }
     });
 
-    const { Transaction } = require('mssql/msnodesqlv8');
+    const { Transaction } = require('mssql');
 
     router.get('/delete_sale_customer/:id', async (req, res) => {
         if (!dbSale) {

@@ -42,21 +42,23 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 // }
 
 function combineData(data) {
-  // แยกข้อมูลเป็น 2 กลุ่ม
-  const normalData = data.filter(item => !item.MachineCode.startsWith('TWR'));
+  // const normalData = data.filter(item => !item.MachineCode.startsWith('TWR'));
+  const comData = data.filter(item => item.MachineCode.startsWith('COM'));
   // แยกข้อมูล TWR 
   const twrData = data.filter(item => item.MachineCode === 'TWR001');
   // แยกข้อมูล ANB001(เตาอบ)
   const anbData = data.filter(item => item.MachineCode === 'ANB001');
   // แยกข้อมูล STN004 (ดัดตรง)
   const stnData = data.filter(item => item.MachineCode === 'STN004');
+  // แยกข้อมูล CUT022
+  const cut022Data = data.filter(item => item.MachineCode === 'CUT022');
 
-  // คำนวณรวมสำหรับเครื่องปกติ
-  const totalPlan = normalData.reduce((sum, item) => sum + item.PlanQuantity, 0);
-  const totalActual = normalData.reduce((sum, item) => sum + item.ActualQuantity, 0);
+  // คำนวณรวมสำหรับเครื่อง COM เท่านั้น
+  const totalPlan = comData.reduce((sum, item) => sum + item.PlanQuantity, 0);
+  const totalActual = comData.reduce((sum, item) => sum + item.ActualQuantity, 0);
   const combinedPercentage = totalPlan > 0 ? (totalActual / totalPlan) * 100 : 0;
 
-  // คำนวณรวมสำหรับ TWR ไม่ต้องมีคำนวน %POP ใส่ 0 ไปเลยเพราะไม่มี Plan
+  // คำนวณรวมสำหรับ TWR ไม่ต้องมีคำนวน %POP
   const twrTotalPlan = twrData.reduce((sum, item) => sum + item.PlanQuantity, 0);
   const twrTotalActual = twrData.reduce((sum, item) => sum + item.ActualQuantity, 0);
   const twrCombinedPercentage = twrTotalPlan > 0 ? (twrTotalActual / twrTotalPlan) * 100 : 0;
@@ -71,12 +73,23 @@ function combineData(data) {
   const stnTotalActual = stnData.reduce((sum, item) => sum + item.ActualQuantity, 0);
   const stnCombinedPercentage = stnTotalPlan > 0 ? (stnTotalActual / stnTotalPlan) * 100 : 0;
   
+  // คำนวณรวมสำหรับ CUT022
+  const cut022TotalPlan = cut022Data.reduce((sum, item) => sum + item.PlanQuantity, 0);
+  const cut022TotalActual = cut022Data.reduce((sum, item) => sum + item.ActualQuantity, 0);
+  const cut022CombinedPercentage = cut022TotalPlan > 0 ? (cut022TotalActual / cut022TotalPlan) * 100 : 0;
+
   const result = [
     {
-      MachineCode: 'All BAR1 Combined Machines',
+      MachineCode: 'All Combined Machines',
       PlanQuantity: totalPlan,
       ActualQuantity: totalActual,
       Percentage: combinedPercentage
+    },
+    {
+      MachineCode: 'CUT022 Machine',
+      PlanQuantity: cut022TotalPlan,
+      ActualQuantity: cut022TotalActual,
+      Percentage: cut022CombinedPercentage
     },
     {
       MachineCode: 'All TWR Machines',
@@ -242,14 +255,12 @@ async function createOrUpdateBarChart() {
       datasets = [{
         label: "%Production On Plan",
         backgroundColor: chartData.map(item => 
-          item.Percentage >= 100 ? "#1cc88a" :
-          item.Percentage >= 95 ? "#f6c23e" :
+          item.Percentage >= 95 ? "#1cc88a" :
           "#e74a3b"
         ),
         data: chartData.map(item => item.Percentage),
         hoverBackgroundColor: chartData.map(item => 
-          item.Percentage >= 100 ? "#17a673" :
-          item.Percentage >= 95 ? "#dda20a" :
+          item.Percentage >= 95 ? "#17a673" :
           "#c23616"
         ),
         borderColor: "#ffffff",

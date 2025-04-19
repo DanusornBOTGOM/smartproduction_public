@@ -1,6 +1,6 @@
 // app/auth/services/auth.service.js
 const bcrypt = require('bcrypt');
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 
 class AuthService {
     constructor(db) {

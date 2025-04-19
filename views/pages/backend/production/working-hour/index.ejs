@@ -5,15 +5,11 @@
                 <div class="card-body">
                     <!-- Filter Controls -->
                     <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label>Start Date:</label>
-                            <input type="date" id="startDate" class="form-control">
+                        <div class="col-md-6">
+                            <label>Month:</label>
+                            <input type="month" id="monthFilter" class="form-control">
                         </div>
-                        <div class="col-md-4">
-                            <label>End Date:</label>
-                            <input type="date" id="endDate" class="form-control">
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label>Department:</label>
                             <select id="department" class="form-control">
                                 <option value="Drawing">Drawing</option>
@@ -48,66 +44,104 @@
     </div>
 </div>
 
-<!-- เพิ่ม JavaScript สำหรับจัดการข้อมูล -->
+<!-- เก็บ inputs เดิมแต่ซ่อนไว้ -->
+<input type="hidden" id="startDate">
+<input type="hidden" id="endDate">
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // ฟังก์ชันโหลดข้อมูล
+    // ฟังก์ชันสำหรับคำนวณวันที่สำหรับเดือนที่เลือก - ให้ตรงกับลอจิกเดิม
+    function calculateDatesFromMonth(monthValue) {
+        const [year, month] = monthValue.split('-').map(Number);
+        
+        // ใช้ลอจิกเดิมที่กำหนดวันที่ 2 ของเดือนที่เลือก
+        const firstDay = new Date(year, month - 1, 2);
+        
+        // ใช้ลอจิกเดิมที่กำหนดวันที่ 1 ของเดือนถัดไป
+        const lastDay = new Date(year, month, 1);
+        
+        return {
+            startDate: firstDay.toISOString().split('T')[0],
+            endDate: lastDay.toISOString().split('T')[0]
+        };
+    }
+    
+    // ฟังก์ชันที่ทำงานเมื่อเลือกเดือนใหม่
+    function onMonthChange() {
+        const monthValue = document.getElementById('monthFilter').value;
+        if (!monthValue) return;
+        
+        const { startDate, endDate } = calculateDatesFromMonth(monthValue);
+        
+        // กำหนดค่าให้ hidden inputs
+        document.getElementById('startDate').value = startDate;
+        document.getElementById('endDate').value = endDate;
+        
+        // เรียกใช้ฟังก์ชันโหลดข้อมูลเดิม
+        loadWorkingHours();
+    }
+    
+    // ฟังก์ชันโหลดข้อมูล (คงเดิมทั้งหมด)
     async function loadWorkingHours() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    const department = document.getElementById('department').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const department = document.getElementById('department').value;
 
-    try {
-        console.log('Sending request with params:', { startDate, endDate, department });
-        
-        const response = await fetch(`/api/production/working-hour/data?startDate=${startDate}&endDate=${endDate}&department=${department}`);
-        const data = await response.json();
-        
-        console.log('Received data:', data);  
+        try {
+            console.log('Sending request with params:', { startDate, endDate, department });
+            
+            const response = await fetch(`/api/production/working-hour/data?startDate=${startDate}&endDate=${endDate}&department=${department}`);
+            const data = await response.json();
+            
+            console.log('Received data:', data);  
 
-        updateTable(data);
-    } catch (error) {
-        console.error('Error loading data:', error);
-    }
-}
-
-function updateTable(data) {
-    const tbody = document.querySelector('#workingHoursTable tbody');
-    tbody.innerHTML = '';
-
-    if (!Array.isArray(data) || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="text-center">No data available</td></tr>';
-        return;
+            updateTable(data);
+        } catch (error) {
+            console.error('Error loading data:', error);
+        }
     }
 
-    data.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${row.BaseMachineCode || ''}</td>
-            <td>${row['1-6'] ? parseFloat(row['1-6']).toFixed(2) : '0.00'}</td>
-            <td>${row['7-13'] ? parseFloat(row['7-13']).toFixed(2) : '0.00'}</td>
-            <td>${row['14-20'] ? parseFloat(row['14-20']).toFixed(2) : '0.00'}</td>
-            <td>${row['21-27'] ? parseFloat(row['21-27']).toFixed(2) : '0.00'}</td>
-            <td>${row['28-31'] ? parseFloat(row['28-31']).toFixed(2) : '0.00'}</td>
-            <td>${row.Total ? parseFloat(row.Total).toFixed(2) : '0.00'}</td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
+    function updateTable(data) {
+        const tbody = document.querySelector('#workingHoursTable tbody');
+        tbody.innerHTML = '';
+
+        if (!Array.isArray(data) || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center">No data available</td></tr>';
+            return;
+        }
+
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${row.BaseMachineCode || ''}</td>
+                <td>${row['1-6'] ? parseFloat(row['1-6']).toFixed(2) : '0.00'}</td>
+                <td>${row['7-13'] ? parseFloat(row['7-13']).toFixed(2) : '0.00'}</td>
+                <td>${row['14-20'] ? parseFloat(row['14-20']).toFixed(2) : '0.00'}</td>
+                <td>${row['21-27'] ? parseFloat(row['21-27']).toFixed(2) : '0.00'}</td>
+                <td>${row['28-31'] ? parseFloat(row['28-31']).toFixed(2) : '0.00'}</td>
+                <td>${row.Total ? parseFloat(row.Total).toFixed(2) : '0.00'}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
 
     // Event Listeners
-    document.getElementById('startDate').addEventListener('change', loadWorkingHours);
-    document.getElementById('endDate').addEventListener('change', loadWorkingHours);
+    document.getElementById('monthFilter').addEventListener('change', onMonthChange);
     document.getElementById('department').addEventListener('change', loadWorkingHours);
 
-    // Set default dates and load initial data
+    // Set default month to current month
     const today = new Date();
-    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    const currentYearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+    document.getElementById('monthFilter').value = currentYearMonth;
+
+    // คำนวณวันที่เหมือนกับโค้ดเดิม
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 2);
+    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
 
     document.getElementById('startDate').value = firstDayOfMonth.toISOString().split('T')[0];
     document.getElementById('endDate').value = lastDayOfMonth.toISOString().split('T')[0];
 
+    // โหลดข้อมูลเริ่มต้น
     loadWorkingHours();
 });
 </script>

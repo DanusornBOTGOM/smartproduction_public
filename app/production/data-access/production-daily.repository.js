@@ -1,4 +1,4 @@
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 const { connectDestSql } = require('../../../config/sqldb_dbconfig');
 const { request } = require('express');
 
@@ -63,7 +63,7 @@ class ProductionDailyRepository {
                 .input('RSNCode', sql.NVarChar(200), productionData.RSNCode)
                 .query(`
                     SELECT COUNT(*) as count
-                    FROM [Production_Analytics].[dbo].[Annealing_Form]
+                    FROM [Production_Analytics].[dbo].[ProductionDailyLogs]
                     WHERE RSNCode = @RSNCode
                 `);
 
@@ -98,7 +98,7 @@ class ProductionDailyRepository {
                 .input('CreateDate', sql.DateTime, currentDateTime)
                 .input('FormTypeID', sql.Int, formTypeID)
                 .query(`
-                    INSERT INTO [Production_Analytics].[dbo].[Annealing_Form]
+                    INSERT INTO [Production_Analytics].[dbo].[ProductionDailyLogs]
                         (DocNo, Grade, RSNCode, Size, MachineCode, CoilNo, CurrentStep, PrintTime, PrintWeight, 
                         TimeIn, TimeInManual, TimeOutManual, SkinStatus, MaterialType, OvenNumber, TimeInForm,
                         TimeOutForm, CreateDate, FormTypeID)
@@ -131,7 +131,7 @@ class ProductionDailyRepository {
                 SELECT ID, DocNo, Grade, RSNCode, Size, MachineCode, CoilNo, CurrentStep, PrintTime, 
                     OvenNumber, TimeInForm, TimeOutForm, PrintWeight, CreateDate, TimeIn, SkinStatus, MaterialType,
                     TimeInManual, TimeOutManual, Remark
-                FROM [Production_Analytics].[dbo].[Annealing_Form]
+                FROM [Production_Analytics].[dbo].[ProductionDailyLogs]
                 WHERE FormTypeID = '2'
                 ${date ? "AND CONVERT(date, TimeOutManual) = @date" : ""}
                 ORDER BY CreateDate DESC
@@ -146,16 +146,16 @@ class ProductionDailyRepository {
     }
 
     // แก้ไขฟอร์ม records
-    async updateTime(id, timeInManual, timeOutManual) {
+    async updateTime(id, timeInManual, timeOutManual, timeInForm, timeOutForm) {
         const db = await this.getConnection();
     
         try {
-            // ตรวจสอบว่ามีข้อมูลอัพไหม
+            // ตรวจสอบว่ามีข้อมูลหรือไม่
             const checkExisting = await db.request()
                 .input('ID', sql.Int, id)
                 .query(`
                     SELECT COUNT(*) as count
-                    FROM [Production_Analytics].[dbo].[Annealing_Form]
+                    FROM [Production_Analytics].[dbo].[ProductionDailyLogs]
                     WHERE ID = @ID
                 `);
     
@@ -163,15 +163,20 @@ class ProductionDailyRepository {
                 throw new Error('ไม่พบข้อมูลที่ต้องการ');
             }
     
+            // อัพเดทข้อมูล
             const result = await db.request()
                 .input('ID', sql.Int, id)
                 .input('TimeInManual', sql.DateTime, new Date(timeInManual))
                 .input('TimeOutManual', sql.DateTime, new Date(timeOutManual))
+                .input('TimeInForm', sql.DateTime, timeInForm ? new Date(timeInForm) : null)
+                .input('TimeOutForm', sql.DateTime, timeOutForm ? new Date(timeOutForm) : null)
                 .input('UpdatedAt', sql.DateTime, new Date())
                 .query(`
-                    UPDATE [Production_Analytics].[dbo].[Annealing_Form]
+                    UPDATE [Production_Analytics].[dbo].[ProductionDailyLogs]
                     SET TimeInManual = @TimeInManual,
                         TimeOutManual = @TimeOutManual,
+                        TimeInForm = @TimeInForm,
+                        TimeOutForm = @TimeOutForm,
                         UpdatedAt = @UpdatedAt
                     WHERE ID = @ID
                     AND FormTypeID = 2
@@ -181,7 +186,7 @@ class ProductionDailyRepository {
                 success: true,
                 affectedRows: result.rowsAffected[0],
                 id: id
-            }
+            };
         } catch (error) {
             console.error('Error updating time:', error);
             throw error;
@@ -222,7 +227,7 @@ class ProductionDailyRepository {
                 .input('FormTypeID', sql.Int, formTypeID)
                 .input('Remark', sql.NVarChar(200), productionData.Remark)
                 .query(`
-                    INSERT INTO [Production_Analytics].[dbo].[Annealing_Form]
+                    INSERT INTO [Production_Analytics].[dbo].[ProductionDailyLogs]
                         (DocNo, Grade, RSNCode, Size, MachineCode, CoilNo, CurrentStep, PrintTime, PrintWeight,
                         TimeIn, TimeInManual, TimeOutManual, SkinStatus, MaterialType, OvenNumber, TimeInForm,
                         TimeOutForm, CreateDate, FormTypeID, Remark)

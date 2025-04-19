@@ -1,6 +1,6 @@
 // Import Express
 const express = require('express')
-const dbConnection = require('./src/utils/database.util'); // เพิ่มมาใหม่่
+const dbConnection = require('./src/utils/database.util');
 
 // Import Express Flash
 const flash = require('express-flash')
@@ -19,7 +19,7 @@ const methodOverride = require('method-override')
 // เพิ่ม Import sales routes
 const salesRouter = require('./app/sales/api/sale.routes');
 
-const authRouter = require('./routes/auth');  // เพิ่มบรรทัดนี้
+const authRouter = require('./routes/auth');
 //Import router backend.js
 const backendRouter = require('./routes/backend')
 //Import router api.js
@@ -70,7 +70,7 @@ app.use(expressLayouts)
 app.set('view engine', 'ejs')
 
 // กำหนดค่าให้สามารถรับค่าจากฟอร์มได้
-app.use(express.json())
+// app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
 
@@ -82,12 +82,22 @@ app.use(cors());
 // เรียกใช้งาน Express session
 const cookieSession = require('cookie-session');
 
+// app.use(cookieSession({
+//     name: 'session',
+//     keys: ['your-secret-key'],
+//     maxAge: 30 * 60 * 1000, // 30 นาที
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === 'production'
+// }));
+
 app.use(cookieSession({
     name: 'session',
-    keys: ['your-secret-key'],
+    keys: [process.env.SESSION_SECRET || 'your-secret-key'],
     maxAge: 30 * 60 * 1000, // 30 นาที
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production'
+    secure: false, // ตั้งเป็น false สำหรับ development
+    sameSite: 'lax', // เพิ่มการตั้งค่านี้
+    domain: process.env.COOKIE_DOMAIN || undefined // ใช้ env var หรือไม่ระบุ
 }));
 
 // เพิ่มหลังจาก cookieSession แต่ก่อน routes
@@ -96,7 +106,16 @@ app.use((req, res, next) => {
     next();
 });
 
-// เพิ่ม compatibility layer สำหรับ req.session
+// Debug Code สำคัญ!!!
+app.use((req, res, next) => {
+    console.log('=== SESSION DEBUG ===');
+    console.log('Session:', req.session);
+    console.log('Cookies:', req.headers.cookie);
+    console.log('=====================');
+    next();
+});
+
+// compatibility layer สำหรับ req.session
 app.use((req, res, next) => {
     if (!req.session.regenerate) {
         req.session.regenerate = (fn) => fn();
@@ -134,7 +153,8 @@ app.use('/api/production', productionAPIRouter);
 //     console.log(`Server run at http://${host}:${port}`)
 // })
 
-const host = process.env.HOST || '0.0.0.0'
+const host = "0.0.0.0";
+
 app.listen(port, host, () => {
     console.log(`Server run at http://${host}:${port}`)
 })

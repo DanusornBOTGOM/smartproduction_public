@@ -137,7 +137,7 @@ function calculateBakingTime(TimeInForm, TimeOutForm) {
 }
 
 // Modal Edit
-function showEditTimeModal(id, docNo, timeIn, timeOut, coilNo) {
+function showEditTimeModal(id, docNo, timeInManual, timeOutManual, timeInForm, timeOutForm, coilNo) {
     if (!id) {
         alert('ไม่สามารถแก้ไขได้ เนื่องจากไม่พบ ID');
         return;
@@ -159,14 +159,26 @@ function showEditTimeModal(id, docNo, timeIn, timeOut, coilNo) {
             <div class='modal-body'>
                 <input type="hidden" id="editRecordId" value="${id}">
 
+                <h6>เวลาต้ม</h6>
                 <div class="form-group">
-                    <label>เวลาเข้า: (${formatDateTime(timeIn)})</label>
-                    <input type="datetime-local" id="editTimeIn" class="form-control" value="${formatDateTimeForInput(timeIn)}">
+                    <label>เวลาเข้า: (${formatDateTime(timeInManual)})</label>
+                    <input type="datetime-local" id="editTimeIn" class="form-control" value="${formatDateTimeForInput(timeInManual)}">
                 </div>
 
                 <div class="form-group">
-                    <label>เวลาออก: (${formatDateTime(timeOut)})</label>
-                    <input type="datetime-local" id="editTimeOut" class="form-control" value="${formatDateTimeForInput(timeOut)}">
+                    <label>เวลาออก: (${formatDateTime(timeOutManual)})</label>
+                    <input type="datetime-local" id="editTimeOut" class="form-control" value="${formatDateTimeForInput(timeOutManual)}">
+                </div>
+
+                <h6>เวลาอบ</h6>
+                <div class="form-group">
+                    <label>เวลาเข้า: (${formatDateTime(timeInForm)})</label>
+                    <input type="datetime-local" id="editTimeInForm" class="form-control" value="${formatDateTimeForInput(timeInForm)}">
+                </div>
+
+                <div class="form-group">
+                    <label>เวลาออก: (${formatDateTime(timeOutForm)})</label>
+                    <input type="datetime-local" id="editTimeOutForm" class="form-control" value="${formatDateTimeForInput(timeOutForm)}">
                 </div>
 
                 <button onclick="validateAndSaveTimeEdit()" class="btn btn-success">บันทึก</button>
@@ -181,7 +193,10 @@ function showEditTimeModal(id, docNo, timeIn, timeOut, coilNo) {
 function validateAndSaveTimeEdit() {
     const timeInStr = document.getElementById('editTimeIn').value;
     const timeOutStr = document.getElementById('editTimeOut').value;
+    const timeInFormStr = document.getElementById('editTimeInForm').value;
+    const timeOutFormStr = document.getElementById('editTimeOutForm').value;
 
+    // boiling time
     if (!timeInStr || !timeOutStr) {
         alert('กรุณาบอกเวลาเข้าและเวลาออกให้ครบถ้วน');
         return;
@@ -201,12 +216,47 @@ function validateAndSaveTimeEdit() {
     }
 
     // คำนวณเวลาที่ใช้ในการต้ม (นาที)
-    const diffMinutes = Math.round((timeOut - timeIn) / (1000 * 60));
+    const boilDiffMinutes = Math.round((timeOut - timeIn) / (1000 * 60));
 
-    // ตรวจสอบว่าเวลาไม่เกิน 24 ชั่วโมง
-    if (diffMinutes > 1440) {
+    if (boilDiffMinutes > 1440) {
         if (!confirm('เวลาที่ใช้ในการต้มมากกว่า 24 ชั่วโมง คุณต้องการบันทึกหรือไม่?')) {
             return;
+        }
+    }
+
+    // ถ้ามีเวลาเข้าอบ ต้องมีเวลาออกอบ
+    if (timeInFormStr && !timeOutFormStr) {
+        alert('คุณได้ระบุเวลาเข้าเตาอบแล้ว กรุณาระบุเวลาออกจากเตาอบด้วย');
+        return;
+    }
+
+    // ตรวจสอบเวลาอบ - ถ้ามีเวลาออกอบ ต้องมีเวลาเข้าอบด้วย
+    if (!timeInFormStr && timeOutFormStr) {
+        alert('คุณได้ระบุเวลาออกจากเตาอบแล้ว กรุณาระบุเวลาเข้าเตาอบด้วย');
+        return;
+    }    
+
+    // Validate baking times only if both are provided
+    if (timeInFormStr && timeOutFormStr) {
+        const timeInForm = new Date(timeInFormStr);
+        const timeOutForm = new Date(timeOutFormStr);
+
+        if (isNaN(timeInForm.getTime()) || isNaN(timeOutForm.getTime())) {
+            alert('รูปแบบเวลาอบไม่ถูกต้อง');
+            return;
+        }
+
+        if (timeOutForm <= timeInForm) {
+            alert('เวลาออกต้องมากกว่าเวลาเข้าสำหรับการอบ');
+            return;
+        }
+
+        const bakeDiffMinutes = Math.round((timeOutForm - timeInForm) / (1000 * 60));
+
+        if (bakeDiffMinutes > 1440) {
+            if (!confirm('เวลาที่ใช้ในการอบมากกว่า 24 ชั่วโมง ต้องการบันทึกหรือไม่')) {
+                return;
+            }
         }
     }
 
@@ -226,6 +276,8 @@ async function saveTimeEdit() {
     const id = document.getElementById('editRecordId').value;
     let timeInManual = document.getElementById('editTimeIn').value;
     let timeOutManual = document.getElementById('editTimeOut').value;
+    let timeInForm = document.getElementById('editTimeInForm').value;
+    let timeOutForm = document.getElementById('editTimeOutForm').value;
 
     try {
         if (!id || id === 'undefined' || id === 'null') {
@@ -244,6 +296,21 @@ async function saveTimeEdit() {
         // แปลงเป็น ISO string
         timeInManual = timeInDate.toISOString();
         timeOutManual = timeOutDate.toISOString();
+        
+        // สำหรับเวลาอบ ตรวจสอบว่ามีการกรอกหรือไม่
+        let timeInFormISO = null;
+        let timeOutFormISO = null;
+        
+        if (timeInForm && timeOutForm) {
+            const timeInFormDate = new Date(timeInForm);
+            const timeOutFormDate = new Date(timeOutForm);
+            
+            timeInFormDate.setHours(timeInFormDate.getHours() + 7);
+            timeOutFormDate.setHours(timeOutFormDate.getHours() + 7);
+            
+            timeInFormISO = timeInFormDate.toISOString();
+            timeOutFormISO = timeOutFormDate.toISOString();
+        }
 
         // แสดง loading
         const saveButton = document.querySelector('#editTimeModal .btn-success');
@@ -259,7 +326,9 @@ async function saveTimeEdit() {
             body: JSON.stringify({
                 id,
                 timeInManual,
-                timeOutManual
+                timeOutManual,
+                timeInForm: timeInFormISO,
+                timeOutForm: timeOutFormISO
             })
         });
 
@@ -271,7 +340,7 @@ async function saveTimeEdit() {
 
         if (result.success) {
             // อัปเดตแถวในตารางโดยตรง
-            updateTableRow(id, timeInManual, timeOutManual);
+            updateTableRow(id, timeInManual, timeOutManual, timeInFormISO, timeOutFormISO);
 
             alert('บันทึกการแก้ไขสำเร็จ');
             closeEditTimeModal();
@@ -292,7 +361,7 @@ async function saveTimeEdit() {
 }
 
 // อัพเดทแถวในตารางโดยตรง
-function updateTableRow(id, timeInManual, timeOutManual) {
+function updateTableRow(id, timeInManual, timeOutManual, timeInForm, timeOutForm) {
     // หาแถวที่ตรงกับ ID
     const rows = document.querySelectorAll('#dailyRecordsTable tbody tr');
     let foundRow = null;
@@ -312,9 +381,10 @@ function updateTableRow(id, timeInManual, timeOutManual) {
         const timeInCell = foundRow.cells[9];  // ตำแหน่งของเซลล์เวลาเข้า
         const timeOutCell = foundRow.cells[10]; // ตำแหน่งของเซลล์เวลาออก
         const boilingTimeCell = foundRow.cells[8]; // ตำแหน่งของเซลล์เวลาต้ม
-        
-        const timeIn = new Date(timeInManual);
-        const timeOut = new Date(timeOutManual);
+
+        const timeInFormCell = foundRow.cells[13];  // ตำแหน่งของเซลล์เวลาเข้าอบ
+        const timeOutFormCell = foundRow.cells[14]; // ตำแหน่งของเซลล์เวลาออกอบ
+        const bakingTimeCell = foundRow.cells[12];  // ตำแหน่งของเซลล์เวลาอบ
         
         // คำนวณเวลาต้มใหม่
         const boilingTime = calculateBoilingTime(timeInManual, timeOutManual);
@@ -323,6 +393,35 @@ function updateTableRow(id, timeInManual, timeOutManual) {
         timeInCell.textContent = formatDateTime(timeInManual);
         timeOutCell.textContent = formatDateTime(timeOutManual);
         boilingTimeCell.textContent = boilingTime;
+
+        // อัปเดตแอตทริบิวต์ data-time
+        timeInCell.setAttribute('data-time', timeInManual || '');
+        timeOutCell.setAttribute('data-time', timeOutManual || '');
+
+        // อัปเดตข้อมูลเวลาอบ กรณีเป็น null
+        if (!timeInForm) {
+            timeInFormCell.textContent = '-';
+            timeInFormCell.setAttribute('data-time', '');
+            bakingTimeCell.textContent = '0';
+        } else {
+            timeInFormCell.textContent = formatDateTime(timeInForm);
+            timeInFormCell.setAttribute('data-time', timeInForm);
+        }
+
+        if (!timeOutForm) {
+            timeOutFormCell.textContent = '-';
+            timeOutFormCell.setAttribute('data-time', '');
+            bakingTimeCell.textContent = '0';
+        } else {
+            timeOutFormCell.textContent = formatDateTime(timeOutForm);
+            timeOutFormCell.setAttribute('data-time', timeOutForm);
+
+            // คำนวนเวลาอบเฉพาะเมื่อมีข้อมูลครบ
+            if (timeInForm) {
+                const bakingTime = calculateBakingTime(timeInForm, timeOutForm);
+                bakingTimeCell.textContent = bakingTime;
+            }
+        }
         
         // ไฮไลท์แถวที่มีการแก้ไข
         foundRow.classList.add('highlight-row');
@@ -386,17 +485,17 @@ function renderTable(data) {
             <td>${record.CoilNo || '-'}</td>
             <td>${record.MachineCode || '-'}</td>
             <td>${boilingTime}</td>
-            <td data-time="${record.TimeInManual}">${formatDateTime(record.TimeInManual)}</td>
-            <td data-time="${record.TimeOutManual}">${formatDateTime(record.TimeOutManual)}</td>
+            <td data-time="${record.TimeInManual || ''}">${formatDateTime(record.TimeInManual)}</td>
+            <td data-time="${record.TimeOutManual || ''}">${formatDateTime(record.TimeOutManual)}</td>
             <td>${record.OvenNumber || '-'}</td>
             <td>${bakingTime}</td>
-            <td>${formatDateTime(record.TimeInForm)}</td>
-            <td>${formatDateTime(record.TimeOutForm)}</td>
+            <td data-time="${record.TimeInForm || ''}">${formatDateTime(record.TimeInForm)}</td>
+            <td data-time="${record.TimeOutForm || ''}">${formatDateTime(record.TimeOutForm)}</td>
             <td>${formatNumber(record.PrintWeight) || '0'}</td>
             <td>${skinStatus}</td>
             <td>${remark}</td>
             <td>
-                <button onclick="showEditTimeModal('${recordId}', '${record.DocNo}', '${record.TimeInManual}', '${record.TimeOutManual}', '${record.CoilNo}')" class="btn btn-primary btn-sm">
+                <button onclick="showEditTimeModal('${recordId}', '${record.DocNo}', '${record.TimeInManual || ''}', '${record.TimeOutManual || ''}', '${record.TimeInForm || ''}', '${record.TimeOutForm || ''}', '${record.CoilNo || ''}')" class="btn btn-primary btn-sm">
                     <i class="fas fa-edit"></i> แก้ไขเวลา
                 </button>
             </td>
@@ -416,19 +515,63 @@ function addClickHandlersToTimeCells() {
         const docNo = row.cells[0].textContent;
         const coilNo = row.cells[6].textContent;
 
-        // เวลาเข้า
+        // แก้ไขบ่อต้มเวลาเข้า
         row.cells[9].addEventListener('click', function() {
-            showEditTimeModal(recordId, docNo, row.cells[9].getAttribute('data-time'), row.cells[10].getAttribute('data-time'), coilNo);
+            showEditTimeModal(
+                recordId, 
+                docNo, 
+                row.cells[9].getAttribute('data-time'), 
+                row.cells[10].getAttribute('data-time'), 
+                row.cells[13].getAttribute('data-time'),
+                row.cells[14].getAttribute('data-time'),
+                coilNo
+            );
         });
 
         // เวลาออก
         row.cells[10].addEventListener('click', function() {
-            showEditTimeModal(recordId, docNo, row.cells[9].getAttribute('data-time'), row.cells[10].getAttribute('data-time'), coilNo);
+            showEditTimeModal(
+                recordId, 
+                docNo, 
+                row.cells[9].getAttribute('data-time'), 
+                row.cells[10].getAttribute('data-time'),
+                row.cells[13].getAttribute('data-time'),
+                row.cells[14].getAttribute('data-time'),
+                coilNo
+            );
         });
+
+        // แก้ไขเวลาอบเข้า
+        row.cells[13].addEventListener('click', function() {
+            showEditTimeModal(
+                recordId, 
+                docNo, 
+                row.cells[9].getAttribute('data-time'), 
+                row.cells[10].getAttribute('data-time'), 
+                row.cells[13].getAttribute('data-time'), 
+                row.cells[14].getAttribute('data-time'), 
+                coilNo
+            );
+        })
+
+        // แก้ไขเวลาอบออก
+        row.cells[14].addEventListener('click', function() {
+            showEditTimeModal(
+                recordId, 
+                docNo, 
+                row.cells[9].getAttribute('data-time'), 
+                row.cells[10].getAttribute('data-time'), 
+                row.cells[13].getAttribute('data-time'), 
+                row.cells[14].getAttribute('data-time'), 
+                coilNo
+            );
+        });        
 
         // cursor pointer ให้รู้ว่าคลิกได้
         row.cells[9].style.cursor = 'pointer';
         row.cells[10].style.cursor = 'pointer';
+        row.cells[13].style.cursor = 'pointer';
+        row.cells[14].style.cursor = 'pointer';
     });
 }
 
@@ -436,21 +579,26 @@ function addClickHandlersToTimeCells() {
 function formatDateTimeForInput(dateStr) {
     if (!dateStr) return '';
 
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) {
+    try {
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) {
+            return '';
+        }
+        
+        // เพิ่ม 7 ชั่วโมงเพื่อแปลงจาก UTC เป็นเวลาไทย
+        date.setHours(date.getHours() - 7);
+        
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    } catch (error) {
+        console.error('Error formatting date for input:', error, 'for value:', dateStr);
         return '';
     }
-    
-    // เพิ่ม 7 ชั่วโมงเพื่อแปลงจาก UTC เป็นเวลาไทย
-    date.setHours(date.getHours() - 7);
-    
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
 function formatDateTimeForOutPut(dateStr) {
@@ -465,18 +613,28 @@ function formatDateTimeForOutPut(dateStr) {
 function formatDateTime(dateStr) {
     if (!dateStr) return '-';
 
-    const date = new Date(dateStr)
-    
-    return new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-        timeZone: 'UTC'
-    }).format(date).replace(/(\d+)\/(\d+)\/(\d+)/, '$3/$1/$2').replace(/,/g, '');
+    try {
+        const date = new Date(dateStr);
+
+        // ตรวจสอบว่า date เป็นค่าที่ถูกต้องหรือไม่
+        if (isNaN(date.getTime())) {
+            return '-';
+        }
+
+        return new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+            timeZone: 'UTC'
+        }).format(date).replace(/(\d+)\/(\d+)\/(\d+)/, '$3/$1/$2').replace(/,/g, '');
+    } catch (error) {
+        console.error('Error formatting date:', error, 'for value:', dateStr);
+        return '-';
+    }
 }
 
 function formatNumber(num) {

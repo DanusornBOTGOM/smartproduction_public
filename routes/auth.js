@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 const { connectSaleSql } = require('../config/sqldb_dbconfig');
 
 router.get('/login', (req, res) => {

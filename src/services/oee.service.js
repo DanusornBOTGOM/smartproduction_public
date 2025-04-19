@@ -1,5 +1,5 @@
 // services/oee.service.js
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 const { connectDestSql } = require('../../config/sqldb_dbconfig');
 const NodeCache = require('node-cache');
 const { 

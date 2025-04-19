@@ -1,4 +1,4 @@
-// const sql = require('mssql/msnodesqlv8')
+// const sql = require('mssql')
 // const { connectDestSql } = require('../../../config/sqldb_dbconfig');
 
 // class Bar2Repository {

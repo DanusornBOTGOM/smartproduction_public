@@ -1,6 +1,6 @@
     // Import Express
     const express = require('express')
-    const sql = require('mssql/msnodesqlv8')
+    const sql = require('mssql')
 
     // Import Moment เพื่อไว้จัดรูปแบบวันที่
     const moment = require('moment-timezone')
@@ -11,7 +11,7 @@
 
     //Import html=pdf
     const ejs = require('ejs')
-    const pdf = require('html-pdf')
+    // const pdf = require('html-pdf')
     const path = require('path')
 
     const router = express.Router()
@@ -573,7 +573,7 @@
 //         }
 //     });
 
-//     const { Transaction } = require('mssql/msnodesqlv8');
+//     const { Transaction } = require('mssql');
 
 //     router.get('/delete_sale_customer/:id', async (req, res) => {
 //         if (!dbSale) {

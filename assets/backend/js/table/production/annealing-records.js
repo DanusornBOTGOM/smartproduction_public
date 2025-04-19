@@ -1,9 +1,13 @@
-let dataTable;
+
+// let dataTable;
 
 window.addEventListener('load', function() {
     initDataTable();
     initDateFilter();
     initExportButtons();
+    
+    // calculateShiftSummary หลังจากโหลดหน้า
+    calculateShiftSummary();
 });
 
 function initDataTable() {
@@ -31,67 +35,60 @@ function initDataTable() {
     }
 }
 
+// คำนวนผลรวม
+function calculateShiftSummary() {
+    let morningCount = 0;
+    let morningWeight = 0;
+    let nightCount = 0;
+    let nightWeight = 0;
+
+    const rows = document.querySelectorAll('#annealingTable tbody tr');
+    rows.forEach(row => {
+        const printTimeStr = row.cells[9].textContent; // ตำแหน่งของ PrintTime (อาจต้องปรับ)
+        const printTime = new Date(printTimeStr);
+        const weight = parseFloat(row.cells[14].textContent) || 0; // ตำแหน่งของ PrintWeight (อาจต้องปรับ)
+        
+        const hour = printTime.getHours();
+        
+        if (hour >= 8 && hour < 20) {
+            morningCount++;
+            morningWeight += weight;
+        } else {
+            nightCount++;
+            nightWeight += weight;
+        }
+    });
+
+    // อัพเดทผลรวมกะ
+    document.getElementById('morningShiftSummary').textContent = 
+        `กะเช้า (08:00-19:59): ${morningCount} รายการ (${morningWeight.toFixed(2)} kg)`;
+    document.getElementById('nightShiftSummary').textContent = 
+        `กะดึก (20:00-07:59): ${nightCount} รายการ (${nightWeight.toFixed(2)} kg)`;
+}
+
 function initDateFilter() {
-    const filterButton = document.getElementById('filterDate');
     const dateInput = document.getElementById('startDate');
 
-    // Set initial date and filter on page load
-    function setTodayAndFilter() {
-        const today = new Date();
-        const formattedDate = today.toISOString().split('T')[0];
-        dateInput.value = formattedDate;
-        filterData(); // Filter data immediately
+    if (!dateInput) {
+        console.error('Date input not found');
+        return;
     }
 
-    // Filter function
+    // ฟังก์ชันกรองข้อมูล
     function filterData() {
         const selectedDate = dateInput.value;
-        const start = new Date(selectedDate);
-        start.setHours(8, 0, 0, 0);
-        const end = new Date(selectedDate);
-        end.setDate(end.getDate() + 1);
-        end.setHours(7, 59, 59, 999);
-    
-        let morningCount = 0;
-        let morningWeight = 0;
-        let nightCount = 0;
-        let nightWeight = 0;
-    
-        const rows = document.querySelectorAll('#annealingTable tbody tr');
-        rows.forEach(row => {
-            const printTimeStr = row.cells[9].textContent; // ปรับจาก 10 เป็น 9
-            const printTime = new Date(printTimeStr);
-            const weight = parseFloat(row.cells[14].textContent) || 0; // ปรับจาก 15 เป็น 14
-            
-            if(printTime >= start && printTime <= end) {
-                const hour = printTime.getHours();
-                
-                if(hour >= 8 && hour < 20) {
-                    morningCount++;
-                    morningWeight += weight;
-                } else {
-                    nightCount++;
-                    nightWeight += weight;
-                }
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    
-        // อัพเดทผลรวมกะ
-        document.getElementById('morningShiftSummary').textContent = 
-            `กะเช้า (08:00-19:59): ${morningCount} รายการ (${morningWeight.toFixed(2)} kg)`;
-        document.getElementById('nightShiftSummary').textContent = 
-            `กะดึก (20:00-07:59): ${nightCount} รายการ (${nightWeight.toFixed(2)} kg)`;
+        if (selectedDate) {
+            window.location.href = `/production/annealing/records?date=${selectedDate}`;
+        }
     }
 
-    // Initialize
-    setTodayAndFilter();
-
-    // Add event listeners
-    filterButton?.addEventListener('click', filterData);
-    dateInput?.addEventListener('change', filterData); // Optional: auto-filter when date changes
+    // เรียกใช้ filterData เมื่อมีการเปลี่ยนแปลงวันที่
+    dateInput.addEventListener('change', function() {
+        filterData();
+    });
+    
+    // คำนวณผลรวมกะเมื่อโหลดหน้า
+    calculateShiftSummary();
 }
 
 function initExportButtons() {
@@ -223,7 +220,6 @@ async function exportToExcel() {
             }
         ];
 
-        // ดึงเฉพาะแถวที่แสดง
         const visibleRows = Array.from(document.querySelectorAll('#annealingTable tbody tr'))
             .filter(row => row.style.display !== 'none')
             .map(row => ({
@@ -263,7 +259,6 @@ visibleRows.forEach((_, index) => {
     });
 });
 
-// header style คงเดิม
 const headerStyle = {
     font: { bold: true, color: { argb: 'FFFFFFFF' } },
     fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF008000' } },

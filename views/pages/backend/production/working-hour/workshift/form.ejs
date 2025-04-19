@@ -1,0 +1,140 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6><%= heading %></h6>
+                </div>
+                <div class="card-body">
+                    <% if (messages && messages.error) { %>
+                        <div class="alert alert-danger" role="alert">
+                            <%= messages.error %>
+                        </div>
+                    <% } %>
+
+                    <form action="<%= actionUrl %>" method="POST">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="machineCode" class="form-label">เครื่องจักร</label>
+                                <select id="machineCode" name="machineCode" class="form-select" required>
+                                    <% machines.forEach(function(machine) { %>
+                                        <option value="<%= machine.MachineCode %>" <%= workshift && workshift.machineCode === machine.MachineCode ? 'selected' : '' %>>
+                                            <%= machine.MachineName %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="workdate" class="form-label">วันที่ทำงาน</label>
+                                <input type="date" id="workdate" name="workdate" class="form-control" 
+                                       value="<%= workshift ? (workshift.workdate || new Date().toISOString().split('T')[0]) : new Date().toISOString().split('T')[0] %>" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="shst" class="form-label">เวลาเริ่มต้น</label>
+                                <input type="datetime-local" id="shst" name="shst" class="form-control" 
+                                       value="<%= workshift && workshift.shst ? (typeof workshift.shst === 'string' && workshift.shst.includes(' ') ? workshift.shst.replace(' ', 'T').substring(0, 16) : workshift.shst) : '' %>" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="shen" class="form-label">เวลาสิ้นสุด</label>
+                                <input type="datetime-local" id="shen" name="shen" class="form-control" 
+                                       value="<%= workshift && workshift.shen ? (typeof workshift.shen === 'string' && workshift.shen.includes(' ') ? workshift.shen.replace(' ', 'T').substring(0, 16) : workshift.shen) : '' %>" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div id="hoursCalculation" class="alert alert-info" style="display: none;">
+                                    เวลาทำงาน: <span id="hoursDisplay">0</span> ชั่วโมง <span id="minutesDisplay">0</span> นาที
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12 text-end">
+                                <a href="/api/production/workshift/list" class="btn btn-secondary me-2">ยกเลิก</a>
+                                <button type="submit" class="btn btn-primary">บันทึก</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // เมื่อมีการเปลี่ยนแปลงข้อมูล
+    function updateHoursCalculation() {
+        const shstInput = document.getElementById('shst');
+        const shenInput = document.getElementById('shen');
+        
+        if (shstInput.value && shenInput.value) {
+            const shstDate = new Date(shstInput.value);
+            const shenDate = new Date(shenInput.value);
+            
+            if (shenDate > shstDate) {
+                const diffMs = shenDate - shstDate;
+                const diffMinutes = Math.floor(diffMs / 60000);
+                const hours = Math.floor(diffMinutes / 60);
+                const minutes = diffMinutes % 60;
+                
+                document.getElementById('hoursDisplay').textContent = hours;
+                document.getElementById('minutesDisplay').textContent = minutes;
+                document.getElementById('hoursCalculation').style.display = 'block';
+            } else {
+                document.getElementById('hoursCalculation').style.display = 'none';
+            }
+        } else {
+            document.getElementById('hoursCalculation').style.display = 'none';
+        }
+    }
+    
+    // เพิ่ม event listener สำหรับการเปลี่ยนแปลงเวลา
+    document.getElementById('shst').addEventListener('change', updateHoursCalculation);
+    document.getElementById('shen').addEventListener('change', updateHoursCalculation);
+    
+    // ตรวจสอบว่ามีค่าเริ่มต้นหรือไม่ ถ้าไม่มีให้กำหนดค่าเริ่มต้น
+    const workdateInput = document.getElementById('workdate');
+    const shstInput = document.getElementById('shst');
+    const shenInput = document.getElementById('shen');
+    
+    if (workdateInput.value && !shstInput.value && !shenInput.value) {
+        // กำหนดเวลาเริ่มต้นเป็น 8:00 น. และเวลาสิ้นสุดเป็น 16:00 น.
+        const date = workdateInput.value;
+        shstInput.value = `${date}T08:00`;
+        shenInput.value = `${date}T16:00`;
+    }
+    
+    // เรียกใช้ฟังก์ชันเมื่อโหลดหน้าเพื่อแสดงเวลาทำงานทันที
+    updateHoursCalculation();
+});
+
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // ดึงข้อมูลจากฟอร์ม
+    const formData = new FormData(this);
+    
+    // แปลงวันที่ให้อยู่ในรูปแบบที่ถูกต้อง
+    const workdate = formData.get('workdate');
+    if (workdate) {
+        // ตรวจสอบและแปลงวันที่ให้เป็น YYYY-MM-DD
+        try {
+            const dateObj = new Date(workdate);
+            if (!isNaN(dateObj.getTime())) {
+                const formattedDate = dateObj.toISOString().split('T')[0];
+                formData.set('workdate', formattedDate);
+            }
+        } catch (error) {
+            console.error('Date format error:', error);
+        }
+    }
+    
+    // ส่งฟอร์ม
+    this.submit();
+});
+</script>

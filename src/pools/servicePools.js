@@ -1,4 +1,4 @@
-const sql = require('mssql/msnodesqlv8');
+const sql = require('mssql');
 
 const config = {
     connectionString: `Driver={ODBC Driver 17 for SQL Server};Server=DRANUSORN_PHA;Database=Production_Analytics;Trusted_Connection=yes;`,
