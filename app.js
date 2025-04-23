@@ -96,7 +96,7 @@ app.use(cookieSession({
     maxAge: 30 * 60 * 1000, // 30 นาที
     httpOnly: true,
     secure: false, // ตั้งเป็น false สำหรับ development
-    sameSite: 'lax', // เพิ่มการตั้งค่านี้
+    sameSite: 'lax',
     domain: process.env.COOKIE_DOMAIN || undefined // ใช้ env var หรือไม่ระบุ
 }));
 

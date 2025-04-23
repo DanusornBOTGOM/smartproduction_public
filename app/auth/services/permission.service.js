@@ -1,3 +1,5 @@
+const { tr } = require("date-fns/locale");
+
 class PermissionService {
     checkPermission(user, module, action) {
         if (!user?.permissions) return false;
@@ -14,27 +16,33 @@ class PermissionService {
     // เช็คสิทธิ์อนุมัติ
     hasApprovalPermission(user) {
         if (!user) return false;
-
-        // ตรวจสอบว่าเป็น supervisor หรือ admin
-        if (user.Role === 'supervisor' || user.Role === 'admin') {
-            return true;
-        }
-
-        // ตรวจสอบจาก permissions
-        if (user.Permissions) {
-            try {
-                const permissions = typeof user.Permissions === 'string'
-                    ? JSON.parse(user.Permissions)
-                    : user.Permissions;
-
-                return permissions?.production?.approve || false;
-            } catch (error) {
-                console.error('Permission check error:', error);
-                return false;
+        
+        try {
+            let permissions;
+            
+            // ตรวจสอบ permissions
+            if (user.Permissions || user.permissions) {
+                const permString = user.Permissions || user.permissions;
+                if (typeof permString === 'string') {
+                    permissions = JSON.parse(permString);
+                } else {
+                    permissions = permString;
+                }
+                
+                // ตรวจสอบสิทธิ์ approve โดยตรง
+                if (permissions?.production?.approve === true) {
+                    return true;
+                }
             }
+            
+            // ถ้าไม่มีสิทธิ์ในรูปแบบ JSON ให้ตรวจสอบ role
+            const role = (user.Role || user.role || '').toLowerCase();
+            return role === 'admin' || role === 'super_admin';
+            
+        } catch (error) {
+            console.error('Permission check error:', error);
+            return false;
         }
-
-        return false;
     }
 }
 

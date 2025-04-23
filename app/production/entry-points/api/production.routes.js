@@ -2,6 +2,8 @@
 const express = require('express');
 const router = express.Router();
 
+const { requireApprovePermission } = require('../../../auth/middleware/auth.middleware')
+
 // Import Service
 const WeeklyService = require('../../domain/weekly');
 const ProfileService = require('../../domain/profile.service');
@@ -1096,7 +1098,7 @@ router.get('/reports/coa-records', async (req, res) => {
 });
 
 // 6. อัพเดทเวลาเพื่อแก้ไข records
-router.post('/reports/update-time', async (req, res) => {
+router.post('/reports/update-time', requireApprovePermission, async (req, res) => {
     try {
         const { id, timeInManual, timeOutManual, timeInForm, timeOutForm } = req.body;
         console.log('Received update request:', { id, timeInManual, timeOutManual, timeInForm, timeOutForm });
@@ -1120,12 +1122,8 @@ router.post('/reports/update-time', async (req, res) => {
 });
 
 // 7. API รออนุมัติ
-router.get('/reports/pending-approvals', async (req, res) => {
+router.get('/reports/pending-approvals', requireApprovePermission, async (req, res) => {
     try {
-        // ตรวจสอบว่า user login แล้วหรือไม่
-        if (!req.session.user) {
-            return res.status(401).json({ error: 'ไม่ได้รับอนุญาต กรุณาเข้าสู่ระบบ' });
-        }
 
         const { date } = req.query;
         const approvalService = new ApprovalService();
@@ -1139,19 +1137,23 @@ router.get('/reports/pending-approvals', async (req, res) => {
 });
 
 // 8. API สำหรับอนุมัติ
-router.post('/reports/approve', async (req, res) => {
+router.post('/reports/approve', requireApprovePermission, async (req, res) => {
     try {
-        // ตรวจสอบว่า user login แล้วหรือไม่
-        if (!req.session.user) {
-            return res.status(401).json({ error: 'ไม่ได้รับอนุญาต กรุณาเข้าสู่ระบบ' });
-        }
-        
         const { recordId, status, comment } = req.body;
+        if (!recordId) {
+            return res.status(400).json({ error: 'กรุณาระบุรายการที่ต้องการอนุมัติ' });
+        }
+
+        // + แปลง status เป็นตัวเลข
+        if (![1, 2].includes(Number(status))) {
+            return res.status(400).json({ error: 'สถานะไม่ถูกต้อง ต้องเป็น 1 (อนุมัติ) หรือ 2 (ไม่อนุมัติ)' });
+        }
+
         const user = req.session.user;
 
         const approvalService = new ApprovalService();
         const result = await approvalService.approveRecord(recordId, user, status, comment);
-        
+
         res.json({
             success: true,
             message: 'บันทึกการอนุมัติสำเร็จ',
@@ -1164,11 +1166,8 @@ router.post('/reports/approve', async (req, res) => {
 })
 
 // 9. API ประวัติการอนุมัติ
-router.get('/reports/approval-history', async (req, res) => {
+router.get('/reports/approval-history', requireApprovePermission, async (req, res) => {
     try {
-        if (!req.session.user) {
-            return res.status(401).json({ error: 'ไม่ได้รับอนุญาต กรุณาเข้าสู่ระบบ' })
-        }
 
         const { date } = req.query;
         const approvalService = new ApprovalService();
@@ -1182,12 +1181,8 @@ router.get('/reports/approval-history', async (req, res) => {
 });
 
 // 10. สำหรับการอนุมัติ
-router.get('/reports/approval', async (req, res) => {
-    try {
-        if (!req.session.user) {
-            return res.redirect('/auth/login?redirect=/production/reports/approval');
-        }
-        
+router.get('/reports/approval', requireApprovePermission, async (req, res) => {
+    try {  
         res.render('pages/backend/production/reports/approval-page', {
             title: 'Production Approval',
             heading: 'Production Approval',
@@ -1200,6 +1195,32 @@ router.get('/reports/approval', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+// 11. อนุมัติรายการทั้งหมดในวัน
+router.get('/reports/approve-all', requireApprovePermission, async (req, res) => {
+    try {
+        const { date, status, comment } = req.body;
+
+        if (!date) {
+            return res.status(400).json({ error: 'กรุณาระบุวันที่' })
+        }
+
+        const user = req.session.user;
+        const userId = user.ID;
+
+        if (!userId) {
+            return res.status(400).json({ error: 'ข้อมูลผู้ใช้ไม่ถูกต้อง' })
+        }
+
+        const approvalService = new ApprovalService();
+        const result = await approvalService.approveAllRecords(date, userId, status, comment);
+        
+        res.json({ success: true, message: 'บันทึกการอนุมัติสำเร็จ', count: result.count });
+    } catch (error) {
+        console.error('Error approving all records:', error);
+        res.status(500).json({ error: error.message });
+    }
+})
 
 // ============ Routes Rework ============
 // 1. แสดงหน้าฟอร์ม Rework

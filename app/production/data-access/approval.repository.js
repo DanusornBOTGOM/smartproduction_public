@@ -115,7 +115,7 @@ class ApprovalRepository {
                 // ถ้าไม่มีเพิ่มใหม่
                 return await db.request()
                     .input('RecordID', sql.Int, recordId)
-                    .input('ReporterID', sql.Int, 1) // กำหนดค่าเริ่มต้น
+                    .input('ReporterID', sql.Int, approverId)
                     .input('ApproverID', sql.Int, approverId)
                     .input('ApprovalStatus', sql.Int, status)
                     .input('ApprovalComment', sql.NVarChar, comment)

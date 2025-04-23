@@ -57,6 +57,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="history-tab" data-toggle="tab" href="#history" role="tab">ประวัติการอนุมัติ</a>
+                    <button id="approveAllBtn" class="btn btn-success btn-sm">
+                        <i class="fas fa-check-double"></i> อนุมัติทั้งหมด
+                    </button>
                 </li>
             </ul>
         </div>
@@ -83,7 +86,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- ข้อมูลจะถูกเพิ่มโดย JavaScript -->
+
                             </tbody>
                         </table>
                     </div>
@@ -106,7 +109,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- ข้อมูลจะถูกเพิ่มโดย JavaScript -->
+
                             </tbody>
                         </table>
                     </div>
@@ -210,7 +213,7 @@
     document.getElementById('approvalDocNo').textContent = docNo;
     
     const modal = document.getElementById('approvalModal');
-    modal.style.display = 'block';
+    modal.classList.add('show');
     modal.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
     
     // โฟกัสที่ element แรกที่โต้ตอบได้ใน modal
@@ -222,7 +225,7 @@
 
 function closeModal() {
     const modal = document.getElementById('approvalModal');
-    modal.style.display = 'none';
+    modal.classList.remove('show');
 }
     
     async function loadPendingData(date) {
@@ -294,7 +297,6 @@ function closeModal() {
             
             const data = await response.json();
             
-            // อัปเดตจำนวนอนุมัติแล้ว
             const approvedCount = data.filter(item => item.ApprovalStatus === 1).length;
             document.getElementById('approvedCount').textContent = approvedCount;
             
@@ -333,13 +335,6 @@ function closeModal() {
     
     // เริ่มการทำงาน
     document.addEventListener('DOMContentLoaded', async () => {
-    console.log('DOM fully loaded');
-    
-    // // ซ่อน modal ตอนโหลดหน้า
-    // const approvalModal = document.getElementById('approvalModal');
-    // if (approvalModal) {
-    //     approvalModal.style.display = 'none';
-    // }
         console.log('DOM fully loaded');
         
         const filterDate = document.getElementById('filterDate');
@@ -347,29 +342,74 @@ function closeModal() {
         const pendingTab = document.getElementById('pending-tab');
         const historyTab = document.getElementById('history-tab');
         const saveApproval = document.getElementById('saveApproval');
+
+        const approveAllBtn = document.getElementById('approveAllBtn');
+        if (approveAllBtn) {
+            approveAllBtn.addEventListener('click', async () => {
+                if (confirm('ยืนยันการอนุมัติรายการทั้งหมดของวันที่เลือก?')) {
+                    const date = filterDate.value;
+
+                    try {
+                        const response = await fetch('/api/production/reports/approve-all', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                date: date,
+                                status: 1,
+                                comment: 'อนุมัติทั้งหมดวันที่ ' + date
+                            })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to approve all records');
+                        }
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                        alert(`อนุมัติสำเร็จ ${result.count} รายการ`);
+                        // โหลดข้อมูลใหม่ทั้งสองส่วน
+                        await loadPendingData(date);
+                        await loadHistoryData(date);
+                        } else {
+                            alert('เกิดข้อผิดพลาด: ' + result.message);
+                        }
+                        
+                    } catch (error) {
+                    console.error('Error approving all records:', error);
+                    alert('เกิดข้อผิดพลาดในการอนุมัติ: ' + error.message);
+                    }
+                }
+            });
+        }
+
         
         // ตรวจสอบและลบ overlay
         const modalBackdrops = document.querySelectorAll('.modal-backdrop');
         modalBackdrops.forEach(backdrop => backdrop.remove());
         
-        // ตั้งค่าวันที่ปัจจุบัน
         const today = new Date();
         filterDate.value = today.toISOString().split('T')[0];
         
         // โหลดข้อมูลครั้งแรก
         await loadPendingData(filterDate.value);
         
-        // Event Listeners
         if (searchButton) {
-            searchButton.addEventListener('click', async () => {
-                const activeTab = document.querySelector('#approvalTabs .nav-link.active');
-                if (activeTab.id === 'pending-tab') {
-                    await loadPendingData(filterDate.value);
-                } else {
-                    await loadHistoryData(filterDate.value);
-                }
-            });
-        }
+        searchButton.addEventListener('click', async () => {
+            const activeTab = document.querySelector('#approvalTabs .nav-link.active');
+            if (activeTab.id === 'pending-tab') {
+                await loadPendingData(filterDate.value);
+            } else {
+                await loadHistoryData(filterDate.value);
+            }
+
+            if (activeTab.id === 'pending-tab') {
+                await loadHistoryData(filterDate.value, true); // ส่งพารามิเตอร์ true เพื่อบอกว่าโหลดเฉพาะตัวเลข
+            }
+        });
+    }
         
         if (pendingTab) {
             pendingTab.addEventListener('click', async () => {
@@ -429,7 +469,6 @@ function closeModal() {
             }
         });
 
-        // ปรับปรุงการคลิกนอก Modal
         window.addEventListener('click', function(event) {
             const modal = document.getElementById('approvalModal');
             if (event.target === modal) {
@@ -441,11 +480,18 @@ function closeModal() {
     </script>
 
 <style>
-    /* ทับ CSS เดิม */
-    .modal {
-        display: none !important; /* initial state */
-    }
-    .modal.show {
-        display: flex !important; /* when shown */
-    }
+.modal {
+    display: none !important;
+}
+.modal.show {
+    display: flex !important; /* when shown */
+    z-index: 1050 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: auto !important;
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}
     </style>
